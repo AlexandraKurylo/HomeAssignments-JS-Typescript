@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 5</title>
+    </head>
+    <body>
+        <div class="task-block" style="margin-bottom: 50px;">
+            <h1>Задача 7</h1>
+            <p>Вивести на екран N абзаців (N вводиться користувачем) за
+                зразком:</p>
+            <img src="../images/task-2.png" alt="paragraphs">
+        </div>
+
+        <script>
+            if (confirm('Почати тестування?')) {
+                let paragraphCount = parseInt(prompt("Введіть кількість розділів (N):"));
+                for (let i = 1; i <= paragraphCount; i++) {
+                    
+                    document.write(`<h1>Заголовок ${i}</h1>`);
+                    for (let j = 1; j <= i; j++) {
+                        document.write(`<p>Розділ ${i}, параграф ${j}</p>`);
+                    }
+                    document.write("<hr>");
+                }
+            }
+        </script>
+    </body>
+</html>

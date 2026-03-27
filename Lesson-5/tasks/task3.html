@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>
+            Задача 11
+        </h1>
+        <p>Знайти суму 5 непарних чисел, що знаходяться між заданими
+            користувачем числами.</p>
+
+        <script>
+           if (confirm('Почати тестування?')) {
+                let start = parseInt(prompt("Введіть перше число:"));
+                let end = parseInt(prompt("Введіть друге число:"));
+                let min = Math.min(start, end);
+                let max = Math.max(start, end);
+
+                // 2 спосіб знаходження меж (на випадок, якщо користувач ввів спочатку більше, а потім менше)
+                // let min, max;
+
+                // if (start < end) {
+                //     min = start;
+                //     max = end;
+                // } else {
+                //     min = end;
+                //     max = start;
+                // }
+
+                let sum = 0;
+                let count = 0;
+
+                for (let i = min; i <= max && count < 5; i++) {
+                    if (i % 2 !== 0) {
+                        sum += i; 
+                        count++;
+                        
+                        document.write("Знайдено непарне число: " + i + "<br>");
+                    }
+                }
+
+                if (count < 5) {
+                    document.write("<br>У заданому діапазоні знайдено менше ніж 5 непарних чисел (всього: " + count + ").<br>");
+                }
+                document.write("<h3>Загальна сума: " + sum + "</h3>");  
+
+            }
+
+        </script>
+    </body>
+</html>

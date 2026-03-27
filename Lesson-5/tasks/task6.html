@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style/style.css">
+        <title>Задача 4</title>
+    </head>
+    <body>
+        <h1>Задача 15
+        </h1>
+        <p> Користувача поступово вводить показники температури протягом року.
+            Знайти середню температуру.</p>
+
+        <script>
+            if (confirm('Почати тестування?')) {
+                // Через do-while
+                let month = 1;
+                let tempSum = 0;
+                
+                document.write("<h2>Аналіз температури за рік</h2>");
+
+                do {
+                    const temp = parseFloat(prompt(`Введіть середню температуру за ${month} місяць:`));
+                    tempSum += temp;
+                    document.write(`Місяць ${month}: ${temp} °C<br>`);
+                    month++;
+                } while (month <= 12);
+
+                const averageTemp = tempSum / 12;
+                document.write(`<hr><h3>Середня температура за рік: ${averageTemp.toFixed(1)} °C</h3>`);
+
+                // Через for
+                // let tempSum = 0; 
+                // let monthsCount = 12;     
+
+                // document.write("<h2>Аналіз температури за рік</h2>");
+                // for (let i = 1; i <= monthsCount; i++) {
+                //     let temp = parseFloat(prompt(`Введіть середню температуру за ${i} місяць:`));
+                //     tempSum += temp;
+                //     document.write(`Місяць ${i}: ${temp} °C<br>`);
+                // }
+
+                // const averageTemp = tempSum / monthsCount;
+                // document.write(`<hr><h3>Середня температура за рік: ${averageTemp.toFixed(1)} °C</h3>`);
+            }
+        </script>
+    </body>
+</html>

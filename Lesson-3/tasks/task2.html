@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>
+            Задача 2
+        </h1>
+        <p>З клавіатури вводиться ціна товару і кількість грошей. Якщо грошей не
+            вистачає то відмовляємо у покупці, інакше, якщо ще залишаються
+            гроші, то пропонуємо купити лотерею за 4 грн.</p>
+
+        <script>
+            const productPrice = parseFloat(prompt(`Введіть вартість товару (грн)`, '100'));
+            const amountOfMoney = parseFloat(prompt(`Введіть кількість Ваших грошей (грн)`, '100'));
+            const remainingMoney = amountOfMoney - productPrice;
+            const LOTTERY_PRICE = 4;
+
+            document.write(`
+                <h3>Введені дані:</h3>
+                <ul>
+                    <li><b>Ціна товару: </b> ${productPrice} грн</li>
+                    <li><b>Кількість грошей покупця: </b> ${amountOfMoney} грн</li>
+                </ul>
+            `)
+
+            if (amountOfMoney >= productPrice) {
+                document.write(`<h3>Грошей вистачає! Ваша решта: ${remainingMoney} грн.</h3>`);
+                
+                if (remainingMoney >= LOTTERY_PRICE) {
+                    document.write(`
+                        <h3>Спеціальна пропозиція: у вас залишилося достатньо коштів, 
+                        щоб придбати лотерейний білет за ${LOTTERY_PRICE} грн!</h3>
+                    `);
+                } else {
+                    document.write(`<h3>Дякуємо за покупку! Гарного дня!</h3>`);
+                }
+            }
+            else
+                document.write(`
+                    <h3>Вибачте, ваших грошей замало. Товар коштує ${productPrice} грн. Приходьте в наступний раз!</h3>
+                `)
+        </script>
+    </body>
+</html>

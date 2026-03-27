@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <p>Знайти суму, добуток та частку двох дійсних чисел. Результат вивести
+            у формі таблиці</p>
+
+        <script>
+            let num1 = parseFloat(prompt(`Введіть перше число`, '0'));
+            let num2 = parseFloat(prompt(`Введіть друге число`, '0'));
+
+            let sum = num1 + num2;
+            let product = num1 * num2;
+            let division = num1 / num2; 
+
+            document.write(`
+                <ul>
+                    <li> Перше число: ${num1}</li>
+                    <li> Друге число: ${num2}</li>
+                </ul>
+
+                <table style="border-collapse: collapse; border: 1px solid black; width: 400px; text-align: center;"> 
+                    <tr style="border: 1px solid black;">
+                        <th style="border: 1px solid black; padding: 5px;">Дія</td>
+                        <th style="border: 1px solid black; padding: 5px;">Результат</td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black; padding: 5px;">Сума</td>
+                        <td style="border: 1px solid black; padding: 5px;">${sum}</td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black; padding: 5px;">Добуток</td>
+                        <td style="border: 1px solid black; padding: 5px;">${product}</td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black; padding: 5px;">Частка</td>
+                        <td style="border: 1px solid black; padding: 5px;">${division}</td> 
+                    </tr>
+                </table>
+            `);     
+        </script>
+    </body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 5</title>
+    </head>
+    <body>
+        <h1>Задача 5
+        </h1>
+        <p>Дано кількість секунд, що пройшла від початку доби. Визначити скільки
+            це годин і хвилин.</p>
+
+        <script>
+            let userValue = parseInt(prompt(`Введіть кількість секунд`, '0'));
+
+            const MIN_IN_SEC = 60;
+            const HOUR_IN_SEC = 3600;
+            
+            let valueInMinutes = Math.floor(userValue / MIN_IN_SEC);
+            let valueInHours = Math.floor(userValue / HOUR_IN_SEC);
+
+
+            document.write(`
+            <ul> 
+               <li><b>Секунди:</b> ${userValue} секунд</li>
+                <li><b>У хвилинах:</b> ${valueInMinutes} хвилин(на/ни)</li>
+                <li><b>У годинах:</b> ${valueInHours} годин(на/ни)</li>
+            </ul>
+            `);
+        </script>
+    </body>
+</html>

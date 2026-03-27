@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <div class="task-block" style="margin-bottom: 50px;">
+            <h1>Задача 6</h1>
+            <p>Вивести 3 таблиці (по 3 рядки і 3 стовпці у кожній) за
+                зразком.</p>
+            <img src="../images/task-1.png" alt="tables">
+        </div>
+
+        <script>
+            if (confirm('Почати тестування?')) {
+                let number = 1; 
+                document.write("<div>")
+                for (let tableCount = 1; tableCount <= 3; tableCount++) {
+                    document.write("<table style='display: inline-block; margin: 10px; border-collapse: collapse; border: 1px solid black;'>");
+
+                    for (let row = 1; row <= 3; row++) {
+                        document.write("<tr>");
+                        
+                        for (let column = 1; column <= 3; column++) {
+                            document.write("<td style='padding: 15px; text-align: center; width: 25px; border: 1px solid black;'>");
+                            document.write(number);
+                            document.write("</td>");
+                            number++;
+                        }
+                        
+                        document.write("</tr>");
+                    }
+                    
+                    document.write("</table>");
+                }
+                document.write("</div>")
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <p>З клавіатури вводяться імена двох дітей та кількість у них цукерок.
+            Вивести не екран ім’я тієї дитини, у якої кількість цукерок є
+            більшою, або вивести, що кількість однакова.</p>
+
+        <script>
+            const firstChildName = prompt(`Введіть ім'я першої дитини `);
+            const firstNumOfSweets = parseInt(prompt(`Введіть кількість цукерок у першої дитини `, "0"));
+            const secondChildName = prompt(`Введіть ім'я другої дитини `);
+            const secondNumOfSweets = parseInt(prompt(`Введіть кількість цукерок у другої дитини `, "0"));
+
+            document.write(`
+                <h3>Введені дані:</h3>
+                <ul>
+                    <li><b>Ім'я першої дитини:</b> ${firstChildName}</li>
+                    <li><b>Кількість цукерок у першої дитини:</b> ${firstNumOfSweets}</li>
+                    <li><b>Ім'я другої дитини:</b> ${secondChildName}</li>
+                    <li><b>Кількість цукерок у другої дитини:</b> ${secondNumOfSweets}</li>
+                </ul>
+            `)
+
+            if (firstNumOfSweets > secondNumOfSweets)
+                document.write(`<h3>${firstChildName} має більше цукерок, ніж ${secondChildName}.</h3>`);
+            else if (firstNumOfSweets < secondNumOfSweets)
+                document.write(`<h3>${secondChildName} має більше цукерок, ніж ${firstChildName}.</h3>`);
+            else
+                document.write(`<h3>${firstChildName} та ${secondChildName} мають однакову кількість цукерок.</h3>`)
+        </script>
+    </body>
+</html>
