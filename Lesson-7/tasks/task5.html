@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 5</title>
+    </head>
+    <body>
+        <h1>Задача 5
+        </h1>
+        <div>
+            <p>Створити окремі функції, які переводять:</p>
+            <ol>
+                <li>Сантиметри у дюйми;</li>
+                <li>Кілограми у фунти;</li>
+                <li>Кілометри у милі.</li>
+            </ol>
+        </div>
+
+        <script>
+            const CM_TO_INCH = 2.54;
+            const KG_TO_POUND = 2.20462;
+            const KM_TO_MILE = 0.621371;
+
+            const getInches = (val) => val / CM_TO_INCH;
+            const getPounds = (val) => val * KG_TO_POUND;
+            const getMiles = (val) => val * KM_TO_MILE;
+
+            function runConverter() {
+                if (!confirm('Почати тестування?')) {
+                    return; 
+                }
+
+                const userChoice = parseInt(prompt(
+                    "Оберіть дію:\n" +
+                    "1 - См у дюйми\n" +
+                    "2 - Кг у фунти\n" +
+                    "3 - Км у милі"
+                ));
+
+                if (isNaN(userChoice) || userChoice < 1 || userChoice > 3) {
+                    alert("Помилка: невірний вибір!");
+                    return;
+                }
+
+                const value = parseFloat(prompt("Введіть числове значення:"));
+
+                if (isNaN(value)) {
+                    alert("Помилка: ви не ввели число!");
+                    return;
+                }
+
+                let result;
+                let inputUnit; 
+                let outputUnit;
+
+                switch (userChoice) {
+                    case 1:
+                        result = getInches(value);
+                        inputUnit = "см";
+                        outputUnit = "дюймів";
+                        break;
+                    case 2:
+                        result = getPounds(value);
+                        inputUnit = "кг";
+                        outputUnit = "фунтів";
+                        break;
+                    case 3:
+                        result = getMiles(value);
+                        inputUnit = "км";
+                        outputUnit = "миль";
+                        break;
+                }
+
+                document.write(`
+                    <h2>Результат конвертації:</h2>
+                    <p style="font-size: 24px;">
+                        <b>${value} ${inputUnit}</b> = <b>${result.toFixed(2)} ${outputUnit}</b>
+                    </p>
+                `);
+            }
+
+            runConverter();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style/style.css">
+        <title>Задача 4</title>
+    </head>
+    <body>
+        <h1>Задача 4
+        </h1>
+        <p>Створити функцію, яка для 3 заданих чисел знаходить одночасно
+            декілька результатів: кількість парних, кількість додатних,
+            кількість більших за 100.</p>
+
+        <script>
+            function getNumbersStats(n1, n2, n3) {
+                const numbers = [n1, n2, n3];
+
+                let evenCount = 0;
+                let positiveCount = 0;
+                let greaterThan100 = 0;
+
+                for (let i = 0; i < numbers.length; i++) {
+                    let currentNum = numbers[i]; 
+
+                    if (currentNum % 2 === 0) evenCount++;
+                    if (currentNum > 0) positiveCount++;
+                    if (currentNum > 100) greaterThan100++;
+                }
+
+                return {
+                    even: evenCount,
+                    positive: positiveCount,
+                    over100: greaterThan100
+                };
+            }
+
+            if (confirm('Почати тестування?')) {
+                const num1 = parseFloat(prompt("Введіть перше число:"));
+                const num2 = parseFloat(prompt("Введіть друге число:"));
+                const num3 = parseFloat(prompt("Введіть третє число:"));
+
+                const stats = getNumbersStats(num1, num2, num3);
+
+                document.write(`
+                    <h2>Статистика чисел (${num1}, ${num2}, ${num3}):</h2>
+                    <ul>
+                        <li>Парних чисел: <b>${stats.even}</b></li>
+                        <li>Додатних чисел: <b>${stats.positive}</b></li>
+                        <li>Більших за 100: <b>${stats.over100}</b></li>
+                    </ul>
+                `);
+            }
+        </script>
+    </body>
+</html>

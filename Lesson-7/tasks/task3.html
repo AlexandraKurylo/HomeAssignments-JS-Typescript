@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 3</title>
+    </head>
+    <body>
+        <h1>
+            Задача 3
+        </h1>
+        <div>
+            <p>Задача 3. Створити окремі функції, які для 4 чисел знаходять:</p>
+            <ol>
+                <li>суму;</li>
+                <li>добуток;</li>
+                <li>середнє арифметичне;</li>
+                <li>мінімальне значення.</li>
+            </ol>
+        </div>
+
+        <script>
+            function getSum(a, b, c, d) {
+                return a + b + c + d;
+            }
+
+            function getProduct(a, b, c, d) {
+                return a * b * c * d;
+            }
+
+            function getAverage(a, b, c, d) {
+                return getSum(a, b, c, d) / 4;
+            }
+
+            function getMin(a, b, c, d) {
+                let min = a;
+                if (b < min) 
+                    min = b;
+                if (c < min) 
+                    min = c;
+                if (d < min)    
+                    min = d;
+                return min;
+                // return Math.min(a, b, c, d);
+            }
+            
+            if (confirm('Почати тестування?')) {
+                const num1 = parseFloat(prompt('Введіть перше число:'));
+                const num2 = parseFloat(prompt('Введіть друге число:'));
+                const num3 = parseFloat(prompt('Введіть третє число:'));
+                const num4 = parseFloat(prompt('Введіть четверте число:'));
+
+                if (isNaN(num1) || isNaN(num2) || isNaN(num3) || isNaN(num4)) {
+                    document.write("Будь ласка, введіть коректні числа!");
+                } else {
+                    document.write(`
+                        <h2>Вхідні дані: ${num1}, ${num2}, ${num3}, ${num4}</h2>
+                        <ul>
+                            <li>Сума: ${getSum(num1, num2, num3, num4)}</li>
+                            <li>Добуток: ${getProduct(num1, num2, num3, num4)}</li>
+                            <li>Середнє: ${getAverage(num1, num2, num3, num4)}</li>
+                            <li>Мінімум: ${getMin(num1, num2, num3, num4)}</li>
+                        </ul>
+                    `);
+                }
+            }
+        </script>
+    </body>
+</html>

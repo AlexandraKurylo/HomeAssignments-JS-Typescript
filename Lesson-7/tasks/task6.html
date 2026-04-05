@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 6</title>
+    </head>
+    <body>
+        <h1>Задача 6
+        </h1>
+        <p>Створити функцію, яка створює таблицю з вказаною кількістю рядків і
+            стовпців (таблиця заповнюється заданим фіксованим
+            повідомленням).</p>
+
+        <script>
+            function createTable(rowsCount, colsCount, message) {
+                let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">';
+                for (let i = 0; i < rowsCount; i++) {
+                    tableHTML += "<tr>";
+                    for (let j = 0; j < colsCount; j++) {
+                        tableHTML += `<td>${message}</td>`;
+                    }
+                    tableHTML += "</tr>"; 
+
+                tableHTML += "</table>";
+                return tableHTML;
+                }
+            }
+            if (confirm('Почати тестування?')) {
+                const userRows = parseInt(prompt("Скільки рядків зробити?", "3"));
+                const userCols = parseInt(prompt("Скільки стовпців зробити?", "3"));
+                const userText = prompt("Яке повідомлення написати в комірках?", "Привіт!");
+
+                if (isNaN(userRows) || isNaN(userCols)) {
+                    document.write("Помилка: введіть коректні числа для рядків та стовпців.");
+                } else {
+                    const table = createTable(userRows, userCols, userText);
+                    document.write(table);
+                }
+            }      
+        </script>
+    </body>
+</html>

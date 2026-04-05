@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 9-10</title>
+    </head>
+    <body>
+        <h1>Задача 9-10
+        </h1>
+        <p> Дано покази температур (довільна кількість). Розробити функцію, яка
+            дозволить підрахувати кількість від’ємних показів температури.
+            Розробити функцію, яка дозволить знайти середнє значення для
+            додатних показів температури.
+        </p>
+
+        <script>
+            function countNegativeTemperatures(tempList) {
+                let count = 0;
+                for (let i = 0; i < tempList.length; i++) {
+                    if (tempList[i] < 0) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+
+            function getAveragePositive(tempList) {
+                let sum = 0;
+                let count = 0;
+                for (let i = 0; i < tempList.length; i++) {
+                    if (tempList[i] > 0) {
+                        sum += tempList[i]; 
+                        count++;            
+                    }
+                }
+                return count > 0 ? (sum / count) : 0;
+            }
+
+            function getTempsTableHTML(tempList) {
+                let tableHTML = `<table border="1" style="border-collapse: collapse; width: 200px; text-align: center; margin-bottom: 20px;">`;
+                tableHTML += `<tr style="background-color: #f2f2f2;"><th>№</th><th>Температура</th></tr>`;
+
+                for (let i = 0; i < tempList.length; i++) {
+                    let color = tempList[i] < 0 ? 'blue' : 'orange';
+                    tableHTML += 
+                    `<tr>
+                        <td>${i + 1}</td>
+                        <td style="color: ${color}; font-weight: bold;">${tempList[i]}°C</td>
+                    </tr>`;
+                }
+
+                tableHTML += `</table>`;
+                return tableHTML;
+            }
+
+
+            const weatherData = [12, -4, 5, -9, 0, 3, -1];
+            if (confirm('Почати тестування?')) {
+                const negativeCount = countNegativeTemperatures(weatherData);
+                const avgPositive = getAveragePositive(weatherData);
+                const table = getTempsTableHTML(weatherData);
+
+                document.write(`<h2>Звіт по погоді</h2>`);
+                document.write(table);
+                document.write(`
+                    <p>Кількість від'ємних: <b>${negativeCount}</b></p>
+                    <p>Середня додатна температура: <b>${avgPositive.toFixed(1)}°C</b></p>
+                `);
+            }
+        </script>
+    </body>
+</html>

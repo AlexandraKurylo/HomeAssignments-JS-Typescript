@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <p>Створити функцію, яка за номером місяця повертає його назву.</p>
+
+        <script>
+            function getMonthName(monthNum) {
+                switch (monthNum) {
+                    case 1:  
+                        return "Січень";
+                    case 2:  
+                        return "Лютий";
+                    case 3:  
+                        return "Березень";
+                    case 4:  
+                        return "Квітень";
+                    case 5:  
+                        return "Травень";
+                    case 6:  
+                        return "Червень";
+                    case 7:  
+                        return "Липень";
+                    case 8:  
+                        return "Серпень";
+                    case 9:  
+                        return "Вересень";
+                    case 10: 
+                        return "Жовтень";
+                    case 11: 
+                        return "Листопад";
+                    case 12: 
+                        return "Грудень";
+                    default: 
+                        return null; 
+                }
+            }
+
+            if (confirm('Почати тестування?')) {
+                const userMonth = parseInt(prompt('Введіть номер місяця:'));
+
+                if (isNaN(userMonth)) {
+                    alert("Ви не ввели число!");
+                } else {
+                    const result = getMonthName(userMonth);
+
+                    if (result) {
+                        document.write(`<h2>Назва місяця: ${result}</h2>`);
+                    } else {
+                        alert("Помилка! Введіть число від 1 до 12.");
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 8</title>
+    </head>
+    <body>
+        <h1>Задача 8
+        </h1>
+        <p>Створити функцію, яка виводить банер (у функцію передаються:
+            зображення, заголовок та посилання, куди переходимо при кліку на
+            зображення (тег img повине знаходитись у середині тега a)).
+        </p>
+
+        <script>
+            function getBannerHTML(imagePath, title, linkUrl) {
+                return `
+                    <div style="max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; border: 2px solid blue; background-color: #E0FFFF; padding: 15px; text-align: center;">
+                        <h3>${title}</h3>
+                        <a href="${linkUrl}" target="_blank">
+                            <img src="${imagePath}" alt="${title}" style="max-width: 100%; border-radius: 5px;">
+                        </a>
+                    </div>
+                `;
+            }
+            document.write('<div style="display: flex; flex-wrap: wrap; gap: 50px; justify-content: center; padding: 20px;">');
+            const firstBanner = getBannerHTML("https://media.licdn.com/dms/image/v2/D4D22AQG-2MyJb5L5_g/feedshare-shrink_800/B4DZ1CfkJ_KoAk-/0/1774937064309?e=1776902400&v=beta&t=RDV8Yw20XIssDZllJrQ1U41nrdqDVfF5FOkgRWfJslQ", "Курс з Python - Машинне навчання та AI", "https://edu.fls.guru/python.html");
+            document.write(firstBanner);
+            const secondBanner = getBannerHTML("https://media.licdn.com/dms/image/v2/D4D22AQE8nzn_61LW3g/feedshare-shrink_800/B4DZzRaZdhI4Ac-/0/1773039884393?e=1776902400&v=beta&t=LIJL0DhaBGy7k7ycwqGh-giAfkSviogHmDkeu5CMluQ", "Курс з JavaScript + TypeScript", "https://edu.fls.guru/js.html");
+            document.write(secondBanner);
+            document.write('</div>');
+        </script>
+    </body>
+</html>

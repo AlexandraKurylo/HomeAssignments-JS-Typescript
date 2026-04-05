@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 7</title>
+    </head>
+    <body>
+        <h1>Задача 7
+        </h1>
+        <div style="margin-bottom: 50px;">
+            <p>Створити функцію, яка випадковим чином виводить на екран одне із
+                4 зображень (шляхи до зображень передаються у функцію).</p>
+        </div>
+
+        <script>
+            function getRandomImageHTML(img1, img2, img3, img4) {
+                const images = [img1, img2, img3, img4];
+                const randomIndex = Math.floor(Math.random() * images.length);
+                const selectedImage = images[randomIndex];
+
+                return `
+                    <div style="text-align: center;">
+                        <h3>Випадкове зображення:</h3>
+                        <img src="${selectedImage}" alt="Random" style="max-width: 400px; border-radius: 10px;">
+                    </div>
+                `;
+            }
+
+            const path1 = 'https://images.unsplash.com/photo-1775027814967-cac2cf014ab7?q=80&w=1171&auto=format&fit=crop';
+            const path2 = 'https://images.unsplash.com/photo-1717320941082-986b3ed53f5b?q=80&w=1170&auto=format&fit=crop';
+            const path3 = 'https://plus.unsplash.com/premium_photo-1661962757805-a0390b8323a9?q=80&w=1170&auto=format&fit=crop';
+            const path4 = 'https://images.unsplash.com/photo-1713535168603-45485d3a15f4?q=80&w=1170&auto=format&fit=crop';
+            
+            const randomImageBlock = getRandomImageHTML(path1, path2, path3, path4);
+
+            document.write(randomImageBlock);
+        </script>
+    </body>
+</html>
