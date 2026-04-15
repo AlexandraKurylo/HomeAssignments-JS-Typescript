@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 6</h1>
+        <p> Дано послідовність цін товарів та назв (у окремих масивах). Вивести
+            на екран ті, які може собі дозволити користувач (кількість грошей
+            задається).</p>
+
+        <script>
+
+            function getAllProductsTable(names, prices) {
+                let table = "<table border='1' style='border-collapse: collapse; width: 300px; margin-bottom: 20px; text-align: center;'>";
+                table += "<tr><th>Товар</th><th>Ціна (грн)</th></tr>";
+
+                for (let i = 0; i < names.length; i++) {
+                    table += "<tr>";
+                    table += "<td>" + names[i] + "</td>";
+                    table += "<td>" + prices[i] + "</td>";
+                    table += "</tr>";
+                }
+
+                table += "</table>";
+                return table;
+            }
+
+            function getAvailableProducts(names, prices, money) {
+                let count = 0;
+                for (let i = 0; i < prices.length; i++) {
+                    if (prices[i] <= money) count++;
+                }
+
+                let affordableNames = new Array(count);
+
+                let currentIndex = 0;
+                for (let i = 0; i < prices.length; i++) {
+                    if (prices[i] <= money) {
+                        affordableNames[currentIndex] = names[i];
+                        currentIndex++;
+                    }
+                }
+                
+                return affordableNames; 
+            }
+
+            function getReport(items) {
+                if (items.length === 0) 
+                    return "Нічого не знайдено за ваш бюджет";
+                return items.join(", ");
+            }
+
+
+
+            const names = ["Смартфон", "Навушники", "Чохол", "Кабель", "Скло"];
+            const prices = [15000, 3000, 450, 200, 350];
+            const budget = 1000;
+
+            const fullTableHtml = getAllProductsTable(names, prices);
+            const affordableList = getAvailableProducts(names, prices, budget);
+            const finalOutput = getReport(affordableList);
+
+            document.write("<h3>Прайс-лист товарів</h3>");
+            document.write(fullTableHtml);
+
+            document.write("<h3>Результати пошуку товарів</h3>");
+            document.write(`Ваш бюджет: <b> ${budget} грн</b><br>`);
+            document.write(`Ви можете собі дозволити: <b> ${finalOutput} </b>`);
+        </script>
+    </body>
+</html>

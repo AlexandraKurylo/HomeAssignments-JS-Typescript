@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style/style.css">
+        <title>Задача </title>
+    </head>
+    <body>
+        <h1>Задача 9
+        </h1>
+        <p>Морський бій. Користувач вводить кількість клітинок одновимірного
+            масиву та кількість одиночних кораблів. Комп’ютер довільно розміщує
+            ці одиночні кораблі у масиві по один у клітинці (якщо у клітинці 0,
+            то клітинка пуста, якщо 1 – то це означає, що там є корабель.
+            Користувач вводить номер клітинки, куди стріляє. Гра продовжується
+            до тих пір, поки не будуть потоплені усі кораблі).
+        </p>
+
+        <script>
+            function createField(size) {
+                let field = new Array(size);
+                for (let i = 0; i < size; i++) {
+                    field[i] = 0;
+                }
+                return field;
+            }
+
+            function placeShips(field, shipsCount) {
+                let placed = 0;
+                while (placed < shipsCount) {
+                    let randomIndex = Math.floor(Math.random() * field.length);
+                    if (field[randomIndex] === 0) {
+                        field[randomIndex] = 1;
+                        placed++;
+                    }
+                }
+                return field;
+            }
+
+            if (confirm('Почати тестування?')) {
+                const fieldSize = parseInt(prompt("Введіть розмір ігрового поля:"));
+                const shipsCount = parseInt(prompt("Введіть кількість одиночних кораблів:"));
+
+                if (isNaN(fieldSize) || isNaN(shipsCount) || shipsCount > fieldSize) {
+                    alert("Помилка введення! Кількість кораблів перевищує розмір поля або введено не число.");
+                } else {
+                    let field = createField(fieldSize);
+                    field = placeShips(field, shipsCount);
+
+                    let sunkShips = 0;
+                    let shotsCount = 0;
+
+                    while (sunkShips < shipsCount) {
+                        let shot = prompt(`Постріл! Введіть номер клітинки (1 - ${fieldSize}):\nПотоплено: ${sunkShips} з ${shipsCount}`);
+                        if (shot === null) 
+                            break;
+
+                        let index = parseInt(shot) - 1;
+
+                        if (index >= 0 && index < fieldSize) {
+                            shotsCount++;
+                            if (field[index] === 1) {
+                                field[index] = 0;
+                                sunkShips++;
+                                alert(`Влучив! Залишилося потопити: ${shipsCount - sunkShips}`);
+                            } else {
+                                alert("Мимо!");
+                            }
+                        } else {
+                            alert("Постріл за межі поля! Спробуйте ще раз.");
+                        }
+                    }
+
+                    document.write("<h3>Гру завершено!</h3>");
+                    if (sunkShips === shipsCount) {
+                        document.write(`Вітаємо! Ви знищили всі <b>${shipsCount}</b> кораблів.<br>`);
+                        document.write(`Загальна кількість пострілів: <b>${shotsCount}</b><br>`);
+                    } else {
+                        document.write("Ви припинили гру достроково.");
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

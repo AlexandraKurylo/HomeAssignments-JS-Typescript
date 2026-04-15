@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 7</title>
+    </head>
+    <body>
+        <h1>
+            Задача 7
+        </h1>
+        <p>Задача 7. Дано послідовність платіжок протягом року. Знайти сумарну
+            кількість грошей за:
+        </p>
+        <ol>
+            <li>за весь рік;</li>
+            <li>у першій половині року;
+            </li>
+            <li>у другій половині року;
+            </li>
+            <li>за літо;
+            </li>
+            <li>за ІІ квартал;
+            </li>
+            <li>за парні місяці (з парними номерами);
+            </li>
+            <li>за місяці, які є початковими у сезоні (весна, літо, осінь,
+                зима).</li>
+        </ol>
+
+        <script>
+            function getSumInRange(payments, startMonth, endMonth) {
+                let sum = 0;
+                for (let i = startMonth; i <= endMonth; i++) {
+                    sum += payments[i];
+                }
+                return sum;
+            }
+
+            function getEvenMonthsSum(payments) {
+                let sum = 0;
+                for (let i = 0; i < payments.length; i++) {
+                    if ((i + 1) % 2 === 0) {
+                        sum += payments[i];
+                    }
+                }
+                return sum;
+            }
+
+            function getSeasonStartSum(payments) {
+                let sum = 0;
+                // Індекси: 2 (березень), 5 (червень), 8 (вересень), 11 (грудень)
+                const startIndexes = [2, 5, 8, 11];
+                for (let i = 0; i < startIndexes.length; i++) {
+                    let index = startIndexes[i];
+                    sum += payments[index];
+                }
+                return sum;
+            }
+
+            if (confirm('Почати тестування?')) {
+                const payments = [1200, 1500, 1100, 900, 1000, 1300, 1400, 1450, 1100, 1200, 1600, 1800];
+
+                const totalYear = getSumInRange(payments, 0, 11);
+                const firstHalf = getSumInRange(payments, 0, 5);
+                const secondHalf = getSumInRange(payments, 6, 11);
+                const summer = getSumInRange(payments, 5, 7); 
+                const secondQuarter = getSumInRange(payments, 3, 5); 
+                const evenMonths = getEvenMonthsSum(payments);
+                const seasonStarts = getSeasonStartSum(payments);
+                
+                document.write("<h3>Звіт по платежах за рік:</h3>");
+                document.write("<ol>")
+                document.write(`<li>Сума за весь рік: <b>${totalYear}</b><br></li>`);
+                document.write(`<li>Перша половина року: <b>${firstHalf}</b><br></li>`);
+                document.write(`<li>Друга половина року: <b>${secondHalf}</b><br></li>`);
+                document.write(`<li>За літо: <b>${summer}</b><br></li>`);
+                document.write(`<li>За ІІ квартал: <b>${secondQuarter}</b><br></li>`);
+                document.write(`<li>За парні місяці: <b>${evenMonths}</b><br></li>`);
+                document.write(`<li>За початкові місяці сезонів: <b>${seasonStarts}</b></li>`);
+                document.write("</ol>")
+            }
+        </script>
+    </body>
+</html>

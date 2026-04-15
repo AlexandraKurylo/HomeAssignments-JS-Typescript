@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 8</title>
+    </head>
+    <body>
+        <h1>
+            Задача 8
+        </h1>
+        <p>Дано одновимірний масив, у якому зберігається певна виграшна сума
+            (елементи заповнюються випадковим чином значеннями від -500 до 500).
+            Надаючи користувачу можливість вибирати номери елементів (поки він
+            не відмовиться). Знаходити сумарний виграш.
+        </p>
+
+        <script>
+            function generateWinnings(size, min, max) {
+                let arr = new Array(size);
+                for (let i = 0; i < size; i++) {
+                    arr[i] = Math.floor(Math.random() * (max - min + 1)) + min;
+                }
+                return arr;
+            }
+
+            function formatArray(arr) {
+                return arr.join(", ");
+            }
+
+
+            if (confirm('Почати тестування?')) {
+                const arraySize = 10;
+                const winnings = generateWinnings(arraySize, -500, 500);
+
+                let totalScore = 0;
+                let userChoice;
+                let keepPlaying = true;
+
+                while (keepPlaying) {
+                    userChoice = prompt(`Виберіть номер елемента від 1 до ${arraySize}:`);
+
+                    if (userChoice === null) 
+                        break;
+
+                    let index = parseInt(userChoice) - 1;
+                    if (!isNaN(index) && index >= 0 && index < arraySize) {
+                        const currentWin = winnings[index];
+                        totalScore += currentWin;
+                        
+                        alert(`Ви витягли: ${currentWin} грн.\nПоточний загальний виграш: ${totalScore} грн.`);
+                    } else {
+                        alert("Помилка! Введіть коректне число в заданому діапазоні.");
+                    }
+
+                    keepPlaying = confirm("Бажаєте вибрати ще один номер?");
+                }
+
+                document.write("<h3>Результати гри 'Випадковий виграш'</h3>");
+                document.write(`Ваш фінальний рахунок: <b>${totalScore} грн</b><br>`);
+                document.write(`Приховані суми в масиві були: ${formatArray(winnings)}`);
+            }
+        </script>
+    </body>
+</html>
