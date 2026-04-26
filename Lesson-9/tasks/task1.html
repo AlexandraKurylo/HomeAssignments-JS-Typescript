@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <div>
+            <p> Користувач вводить кількість елементів. Створити масив, що
+                складається з вказаної кількості елементів заповнених нулями.
+            </p>
+        </div>
+        <script>
+            function createZeroArray(length) {
+                return new Array(length).fill(0);
+            }
+
+            function displayArray(arr) {
+                let resultHTML = "<h3>Отриманий масив:</h3><div style='display: flex; gap: 5px; flex-wrap: wrap;'>";
+                
+                arr.forEach((item, index) => {
+                    resultHTML += `
+                        <span style="border: 1px solid black; padding: 5px 10px; background: #f0f0f0;">
+                            [${index}]: <b>${item}</b>
+                        </span>`;
+                });
+
+                resultHTML += "</div>";
+                document.write(resultHTML);
+            }
+
+            if (confirm('Почати тестування?')) {
+                const elementsCount = parseInt(prompt("Введіть кількість елементів масиву:"));
+
+                if (isNaN(elementsCount) || elementsCount < 0) {
+                    document.write("<h2 style='color: red;'>Помилка: введіть коректне додатне число!</h2>");
+                } else {
+                    const zeroArray = createZeroArray(elementsCount);
+                    displayArray(zeroArray);
+                }
+            }
+        </script>
+    </body>
+</html>

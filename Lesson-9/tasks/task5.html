@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style/style.css">
+        <title>Задача 5</title>
+    </head>
+    <body>
+        <h1>Задача 5
+        </h1>
+        <p>Дано масив елементів. Знайти добуток додатних елементів</p>
+
+        <script>
+            function getPositiveProduct(arr) {
+                let product = 1;
+                let hasPositive = false;
+
+                for (const num of arr) {
+                    if (num > 0) {
+                        product *= num;
+                        hasPositive = true;
+                    }
+                }
+
+                return hasPositive ? product : 0;
+            }
+
+            function renderArray(arr) {
+                return arr.join(', ');
+            }
+
+            const numbers = [-2, 5, 0, 2, -10, 3];
+
+            const result = getPositiveProduct(numbers);
+            const arrayText = renderArray(numbers);
+
+            document.write(`
+                <div style="border-left: 4px solid #2e7d32; padding: 15px; background: #f9f9f9; margin-top: 10px;">
+                    <p>Масив: [${arrayText}]</p>
+                    <h3>Добуток додатних чисел: <span style="color: #2e7d32;">${result}</span></h3>
+                </div>
+            `);
+        </script>
+    </body>
+</html>

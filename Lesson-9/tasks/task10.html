@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 10</title>
+    </head>
+    <body>
+        <h1>Задача 10
+        </h1>
+        <p>Дано масив цін у грн. Податок складає 20%. Сформувати масив, який
+            буде містити величину сплаченого податку у грн.
+        </p>
+
+        <script>
+            function calculateTaxes(pricesArray) {
+                return pricesArray.map((price) => {
+                    const tax = price * 0.2;
+                    return parseFloat(tax.toFixed(2));
+                });
+            }
+
+            function displayTaxReport(originalPrices, taxes) {
+                let html = `
+                    <table border="1" style="border-collapse: collapse; width: 300px; text-align: center; font-family: sans-serif;">
+                        <tr style="background-color: #fce4ec;">
+                            <th>Ціна (грн)</th>
+                            <th>Податок 20% (грн)</th>
+                        </tr>`;
+
+                for (let i = 0; i < originalPrices.length; i++) {
+                    html += `
+                        <tr>
+                            <td>${originalPrices[i]}</td>
+                            <td style="color: #c2185b; font-weight: bold;">${taxes[i]}</td>
+                        </tr>`;
+                }
+
+                html += `</table>`;
+                document.write("<h3>Звіт про сплату податків</h3>");
+                document.write(html);
+            }
+
+            const prices = [100, 500, 1250, 40, 3000];
+            const taxValues = calculateTaxes(prices);
+
+            displayTaxReport(prices, taxValues);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>Задача 2</h1>
+        <p> Користувач вводить кількість елементів. Створити масив, у якому
+            перша половина заповнена 1-цями, а друга заповнена 7-ками.</p>
+
+        <script>
+            function createSplitArray(length) {
+                const arr = new Array(length);
+                const middle = Math.floor(length / 2);
+                arr.fill(1, 0, middle);
+                arr.fill(7, middle);
+                return arr;
+            }
+
+            function displayArray(arr) {
+                let html = '<table border="1" style="border-collapse: collapse; text-align: center; margin-top: 10px;"><tr>';
+                
+                arr.forEach((item, index) => {
+                    let bgColor = (item === 1) ? "#fff9c4" : "#e1f5fe";
+                    html += `<td style="padding: 10px; background: ${bgColor}; width: 30px;">${item}</td>`;
+                });
+
+                html += '</tr></table>';
+                document.write(html);
+            }
+
+            if (confirm('Почати тестування?')) {
+                const userCount = parseInt(prompt("Введіть кількість елементів:"));
+
+                if (!isNaN(userCount) && userCount > 0) {
+                    const resultArr = createSplitArray(userCount);
+
+                    document.write(`<h3>Комбінований масив:</h3>`);
+                    displayArray(resultArr);
+                } else {
+                    document.write("Будь ласка, введіть коректне число.");
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 4</title>
+    </head>
+    <body>
+        <h1>
+            Задача 4
+        </h1>
+        <p>Дано масив елементів. Вивести на екран елементи, що більші за 100
+        </p>
+
+        <script>
+            function displayOriginalArray(arr) {
+                document.write(`<p>Оригінальний масив: [${arr.join(', ')}]</p>`);
+            }
+
+            function displayLargeNumbers(arr) {
+                let resultHTML = "<ul>";
+                let found = false;
+
+                for (const item of arr) {
+                    if (item > 100) {
+                        resultHTML += `<li>Елемент: <b>${item}</b></li>`;
+                        found = true;
+                    }
+                }
+
+                resultHTML += "</ul>";
+
+                if (!found) {
+                    return "<p>Елементів, більших за 100, не знайдено.</p>";
+                }
+
+                return resultHTML;
+            }
+
+
+            const myNumbers = [45, 120, 3, 256, 88, 101, 7, 100];
+            document.write("<h3>Аналіз масиву чисел</h3>");
+            displayOriginalArray(myNumbers);
+            const filteredList = displayLargeNumbers(myNumbers);
+            document.write("<h3>Елементи масиву, що більші за 100:</h3>");
+            document.write(filteredList);
+        </script>
+    </body>
+</html>

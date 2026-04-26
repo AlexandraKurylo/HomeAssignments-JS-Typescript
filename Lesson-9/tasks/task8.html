@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 8</title>
+    </head>
+    <body>
+        <h1>Задача 8
+        </h1>
+        <p>Дано масив номерів авто. Сформувати новий масив тих, які починаються
+            на «А»</p>
+
+        <script>
+            function filterPlatesByLetter(platesArray, letter) {
+                return platesArray.filter((plate) => {
+                    return plate.toUpperCase().startsWith(letter.toUpperCase());
+                });
+            }
+
+            function displayPlates(title, plates) {
+                let listHTML = `<h4>${title}</h4><ul>`;
+                
+                plates.forEach(plate => {
+                    listHTML += `<li>${plate}</li>`;
+                });
+                
+                listHTML += `</ul>`;
+                document.write(listHTML);
+            }
+
+            const carPlates = ["AA1234BB", "BC5566CB", "AI9988EE", "AM0022KK", "BE1122AA", "AX5050HP"];
+            const filteredPlates = filterPlatesByLetter(carPlates, "A");
+            displayPlates("Всі номери:", carPlates);
+            displayPlates("Номери, що починаються на 'А':", filteredPlates);
+        </script>
+    </body>
+</html>

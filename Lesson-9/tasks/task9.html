@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 9</title>
+    </head>
+    <body>
+        <h1>Задача 9
+        </h1>
+        <p>Дано масив імен. Сформувати масив з перших літер цих імен.
+        </p>
+
+        <script>
+            function getFirstLetters(namesArray) {
+                return namesArray.map((name) => {
+                    return name.length > 0 ? name[0] : "";
+                });
+            }
+
+            function displayResult(original, result) {
+                document.write(`
+                    <ul>
+                        <li><b>Оригінальні імена:</b> ${original.join(', ')}</li>
+                        <li><b>Масив перших літер:</b> <span style="color: red; font-weight: bold;">[${result.join(', ')}]</span></li>
+                    </ul>
+                `);
+            }
+
+            const names = ["Андрій", "Богдан", "Вікторія", "Галина", "Дмитро"];
+            const firstLetters = getFirstLetters(names);
+            displayResult(names, firstLetters);
+        </script>
+    </body>
+</html>

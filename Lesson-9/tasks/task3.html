@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 3</title>
+    </head>
+    <body>
+        <h1>
+            Задача 3
+        </h1>
+        <p>Користувач вводить кількість елементів. Створити масив, у якому перші
+            5 елементів заповнені 1-цями, а інші до кінця масиву заповнені
+            7-ками.</p>
+
+        <script>
+            function createFixedSplitArray(length) {
+                const arr = new Array(length);
+                arr.fill(1, 0, 5);
+                if (length > 5) {
+                    arr.fill(7, 5);
+                }
+
+                return arr;
+            }
+
+            function displaySimpleArray(arr) {
+                let html = '<table border="1" style="border-collapse: collapse; text-align: center; margin-top: 10px;"><tr>';
+                
+                arr.forEach((item, index) => {
+                    let bgColor = (index < 5) ? "#fff9c4" : "#e1f5fe";
+                    html += `<td style="padding: 10px; background: ${bgColor}; width: 30px;">${item}</td>`;
+                });
+
+                html += '</tr></table>';
+                document.write(html);
+            }
+
+            if (confirm('Почати тестування?')) {
+                const count = parseInt(prompt("Введіть загальну кількість елементів масиву:"));
+
+                if (!isNaN(count) && count > 0) {
+                    const finalArray = createFixedSplitArray(count);
+                    
+                    document.write(`<h3>Масив на ${count} елементів:</h3>`);
+                    displaySimpleArray(finalArray);
+                } else {
+                    document.write("Помилка: введіть коректне число.");
+                }
+            }
+        </script>
+    </body>
+</html>
