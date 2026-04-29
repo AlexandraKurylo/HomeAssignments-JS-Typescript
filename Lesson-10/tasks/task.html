@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача</title>
+    </head>
+    <body>
+        <h1>Задача</h1>
+        <div>
+            <h2> Дано історію цін на цінні папери за деякий період (згенерувати
+                від 1 до 10000)
+            </h2>
+            <ol
+                style="font-size: 18px; display: flex; flex-direction: column; gap: 10px;">
+                <li>Сформувати новий масив, у якому є тільки ті, що більші за
+                    1000 грн.
+                </li>
+                <li>Сформувати новий масив, у якому є номери тільки тих, що
+                    більші за 1000 грн.
+                </li>
+                <li>Сформувати список з тих цін, які більші за попереднє
+                    значення.
+                </li>
+                <li>Сформувати новий масив, що міститиме значення цін у
+                    відсотках стосовно максимального</li>
+                <li>Підрахувати кількість змін цін.
+                </li>
+                <li>Визначити, чи є ціна, що менше 1000.
+                </li>
+                <li>Визначати, чи усі ціни більше за 1000.
+                </li>
+                <li>Підрахувати кількість цін, що більше за 1000.</li>
+                <li>Підрахувати суму цін, що більше за 1000.</li>
+                <li>Знайти першу ціну, що більше за 1000.</li>
+                <li>Знайти індекс першої ціни, що більше за 1000.</li>
+                <li>Знайти останню ціну, що більше за 1000.</li>
+                <li>Знайти індекс останньої ціни, що більше за 1000.</li>
+            </ol>
+        </div>
+        <script>
+            function generatePrices(count) {
+                return Array.from({ length: count }, () => {
+                    return Math.floor(Math.random() * 10000) + 1;
+                });
+            }
+
+            // 1) Сформувати новий масив, у якому є тільки ті, що більші за 1000 грн.
+            function getPricesAbove1000(prices) {
+                return prices.filter(price => price > 1000);
+            }
+
+            // 2) Сформувати новий масив, у якому є номери тільки тих, що більші за 1000 грн.
+            function getIndexesAbove1000(prices) {
+                return prices.reduce((acc, price, index) => {
+                    if (price > 1000) 
+                        acc.push(index);
+                    return acc;
+                }, []);
+            }
+
+            // 3) Сформувати список з тих цін, які більші за попереднє значення
+            function getPricesBiggerThanPrev(prices) {
+                return prices.filter((price, index, array) => index > 0 && price > array[index - 1]);
+            }
+
+            // 4) Сформувати новий масив, що міститиме значення цін у відсотках стосовно максимального
+            function getPercentagesOfMax(prices) {
+                const max = Math.max(...prices);
+                return prices.map(price => ((price / max) * 100).toFixed(2) + "%");
+            }
+
+            // 5) Підрахувати кількість змін цін
+            function getPriceChangesCount(prices) {
+                return prices.reduce((count, price, index, array) => {
+                    return (index > 0 && price !== array[index - 1]) ? count + 1 : count;
+                }, 0);
+            }
+
+            // 6) Визначити, чи є ціна, що менше 1000
+            function hasPriceBelow1000(prices) {
+                return prices.some(price => price < 1000) ? "Так" : "Ні";
+            }
+
+            // 7) Визначати, чи усі ціни більше за 1000
+            function areAllAbove1000(prices) {
+                return prices.every(price => price > 1000) ? "Так" : "Ні";
+            }
+
+            // 8) Підрахувати кількість цін, що більше за 1000
+            function getCountAbove1000(prices) {
+                return prices.reduce((count, price) => {
+                    return price > 1000 ? count + 1 : count;
+                }, 0);
+            }
+
+            // 9) Підрахувати суму цін, що більше за 1000
+            function getSumAbove1000(prices) {
+                return prices.reduce((sum, price) => {
+                    return price > 1000 ? sum + price : sum;
+                }, 0);
+            }
+
+            // 10) Знайти першу ціну, що більше за 1000
+            function getFirstAbove1000(prices) {
+                return prices.find(price => price > 1000) ?? "Не знайдено";
+            }
+
+            // 11) Знайти індекс першої ціни, що більше за 1000
+            function getFirstIndexAbove1000(prices) {
+                return prices.findIndex(price => price > 1000);
+            }
+
+            // 12) Знайти останню ціну, що більше за 1000
+            function getLastAbove1000(prices) {
+                return prices.findLast(price => price > 1000) ?? "Не знайдено";
+            }
+
+            // 13) Знайти індекс останньої ціни, що більше за 1000
+            function getLastIndexAbove1000(prices) {
+                return prices.findLastIndex(price => price > 1000);
+            }
+
+            function renderResultsTable(labels, results) {
+                let tableHTML = `
+                    <table border="1" style="border-collapse: collapse; font-family: Arial; width: 100%; margin-top: 20px;">
+                        <thead>
+                            <tr style="background: #e3f2fd;">
+                                <th style="padding: 10px; border: 1px solid #90caf9;">№ завдання</th>
+                                <th style="padding: 10px; border: 1px solid #90caf9;">Опис</th>
+                                <th style="padding: 10px; border: 1px solid #90caf9;">Результат</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                for (let i = 0; i < labels.length; i++) {
+                    const displayValue = Array.isArray(results[i]) 
+                        ? `[${results[i].join(', ')}]` 
+                        : results[i];
+
+                    tableHTML += `
+                        <tr>
+                            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${i + 1}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${labels[i]}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd; word-break: break-all;">
+                                ${displayValue}
+                            </td>
+                        </tr>`;
+                }
+
+                tableHTML += `</tbody></table>`;
+                document.write(tableHTML);
+            }
+
+
+            const stockPrices = generatePrices(20);
+            document.write(`<h2>Згенеровані ціни:</h2> [${stockPrices.join(', ')}]`);
+
+            const labels = [
+                "Ціни > 1000", 
+                "Індекси цін > 1000", 
+                "Більші за попереднє", 
+                "% від максимальної", 
+                "Кількість змін цін", 
+                "Чи є ціна < 1000?", 
+                "Чи всі ціни > 1000?", 
+                "Кількість цін > 1000", 
+                "Сума цін > 1000", 
+                "Перша ціна > 1000", 
+                "Індекс першої > 1000", 
+                "Остання ціна > 1000", 
+                "Індекс останньої > 1000"
+            ];
+
+            const results = [
+                getPricesAbove1000(stockPrices), 
+                getIndexesAbove1000(stockPrices), 
+                getPricesBiggerThanPrev(stockPrices),
+                getPercentagesOfMax(stockPrices), 
+                getPriceChangesCount(stockPrices), 
+                hasPriceBelow1000(stockPrices),
+                areAllAbove1000(stockPrices), 
+                getCountAbove1000(stockPrices), 
+                getSumAbove1000(stockPrices),
+                getFirstAbove1000(stockPrices), 
+                getFirstIndexAbove1000(stockPrices), 
+                getLastAbove1000(stockPrices),
+                getLastIndexAbove1000(stockPrices)
+            ];
+
+            document.write(`<h2>Аналіз цін (Масив: [${stockPrices.join(', ') }])</h2>`);
+            renderResultsTable(labels, results);
+        </script>
+    </body>
+</html>
