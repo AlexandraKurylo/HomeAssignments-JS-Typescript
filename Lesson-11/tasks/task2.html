@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>Задача 2</h1>
+        <div>
+            <h2> Дано історію цін на цінні папери за деякий період (згенерувати
+                від 1 до 10000)
+            </h2>
+            <ol
+                style="font-size: 18px; display: flex; flex-direction: column; gap: 10px;">
+                <li>Загальний прибуток кожного масиву за тиждень.
+                </li>
+                <li>Загальний прибуток усіх магазинів по дням (загальний
+                    прибуток усіх магазинів за понеділок, за вівторок, і т.д.).
+                </li>
+                <li>Загальний прибуток за робочі дні.
+                </li>
+                <li>Загальний прибуток за вихідні дні.</li>
+                <li>Максимальний прибуток за середу.
+                </li>
+                <li>Сформувати загальний список (одновимірний масив) зі
+                    значенням, які що більші за 200.
+                </li>
+                <li>Відсортувати кожен тиждень за зростанням.
+                </li>
+                <li>Відсортувати тижні (рядки) за спаданням максимального
+                    елементи у цьому тижні (рядку), тобто при порівнянні рядків
+                    потрібно порівнювати максимальні елементи у кожному з цих
+                    рядків.
+                </li>
+                <li>Впорядкувати тижні (рядки) за спаданням суми елементів у
+                    рядку (тобто при порівнянні двох рядків треба знайти суму
+                    кожного з рядків і порівнювати ці суми, на основі цих сум
+                    буде зрозуміло, який з елементів повинен іти раніше).</li>
+            </ol>
+        </div>
+        <script>
+            function getRandomNumber(minValue, maxValue) {
+                return minValue + Math.floor(Math.random() * (maxValue - minValue + 1));
+            }
+
+            function generateRandomArray(arrayLength, minValue, maxValue) {
+                const arr = [];
+                for (let i = 0; i < arrayLength; i++) {
+                    arr.push(getRandomNumber(minValue, maxValue));
+                }
+                return arr;
+            }
+
+            function generateRandomTable(rowsNumber, columnsNumber, minValue, maxValue) {
+                const table = [];
+                for (let i = 0; i < rowsNumber; i++) {
+                    table.push(generateRandomArray(columnsNumber, minValue, maxValue));
+                }
+                return table;
+            }
+
+            const profitsTable = generateRandomTable(3, 7, 100, 500);
+
+            // 1) Загальний прибуток кожного магазину за тиждень
+            function getTotalPerStore(matrix) {
+                return matrix.map((row) => row.reduce((sum, val) => sum + val, 0));
+            }
+
+            // 2) Загальний прибуток усіх магазинів по дням
+            function getTotalPerDay(matrix) {
+                const daysSums = [];
+                const daysCount = matrix[0].length;
+                for (let d = 0; d < daysCount; d++) {
+                    let daySum = matrix.reduce((sum, row) => sum + row[d], 0);
+                    daysSums.push(daySum);
+                }
+                return daysSums;
+            }
+
+            // 3) Загальний прибуток за робочі дні (0-4)
+            function getWorkDaysTotal(matrix) {
+                return matrix.reduce((total, row) => {
+                    return total + row.reduce((sum, val, idx) => (idx < 5 ? sum + val : sum), 0);
+                }, 0);
+            }
+
+            // 4) Загальний прибуток за вихідні дні (5-6)
+            function getWeekendTotal(matrix) {
+                return matrix.reduce((total, row) => {
+                    return total + row.reduce((sum, val, idx) => (idx >= 5 ? sum + val : sum), 0);
+                }, 0);
+            }
+
+            // 5) Максимальний прибуток за середу (індекс 2)
+            function getMaxWednesday(matrix) {
+                return Math.max(...matrix.map((row) => row[2]));
+            }
+
+            // 6) Список значень, що більші за 200
+            function getValuesOver200(matrix) {
+                return matrix.flat().filter((val) => val > 200);
+            }
+
+            // 7) Відсортувати кожен тиждень за зростанням
+            function sortEachWeekAsc(matrix) {
+                return matrix.map((row) => row.slice().sort((a, b) => a - b));
+            }
+
+            // 8) Сортувати тижні за спаданням макс. елемента
+            function sortWeeksByMaxDesc(matrix) {
+                return matrix.slice().sort((rowA, rowB) => {
+                    return Math.max(...rowB) - Math.max(...rowA);
+                });
+            }
+
+            // 9) Сортувати тижні за спаданням суми рядка
+            function sortWeeksByTotalDesc(matrix) {
+                return matrix.slice().sort((rowA, rowB) => {
+                    const sumA = rowA.reduce((s, v) => s + v, 0);
+                    const sumB = rowB.reduce((s, v) => s + v, 0);
+                    return sumB - sumA;
+                });
+            }
+
+            function createHtmlTable(matrix, title) {
+                let html = `<h3>${title}</h3><table border="1" style="border-collapse:collapse; margin-bottom: 20px;">`;
+                for (let i = 0; i < matrix.length; i++) {
+                    html += "<tr>";
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        html += `<td style="padding:8px; text-align:center;">${matrix[i][j]}</td>`;
+                    }
+                    html += "</tr>";
+                }
+                html += "</table>";
+                return html;
+            }
+
+            function renderAll() {
+                let output = "<h2>Аналіз прибутків магазинів</h2>";
+                output += createHtmlTable(profitsTable, "Початкова таблиця прибутків (Дні 1-7)");
+
+                const perStore = getTotalPerStore(profitsTable);
+                const perDay = getTotalPerDay(profitsTable);
+
+                output += "<h2>Загальні показники:</h2>";
+                output += "<ul style='font-size: 18px;'>";
+                output += `<li>Прибуток кожного магазину: <b>${perStore.join(", ")}</b></li>`;
+                output += `<li>Прибуток по дням (Пн-Нд): <b>${perDay.join(", ")}</b></li>`;
+                output += `<li>За робочі дні: <b>${getWorkDaysTotal(profitsTable)}</b></li>`;
+                output += `<li>За вихідні дні: <b>${getWeekendTotal(profitsTable)}</b></li>`;
+                output += `<li>Максимальна середа: <b>${getMaxWednesday(profitsTable)}</b></li>`;
+                output += `<li>Значення більше 200: <i>${getValuesOver200(profitsTable).join(", ")}</i></li>`;
+                output += "</ul>";
+                output += createHtmlTable(sortEachWeekAsc(profitsTable), "7) Кожен тиждень відсортовано за зростанням");
+                output += createHtmlTable(sortWeeksByMaxDesc(profitsTable), "8) Рядки відсортовано за спаданням максимуму");
+                output += createHtmlTable(sortWeeksByTotalDesc(profitsTable), "9) Рядки відсортовано за спаданням суми");
+
+                document.write(output);
+            }
+
+            renderAll();
+        </script>
+    </body>
+</html>

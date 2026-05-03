@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 3</title>
+    </head>
+    <body>
+        <h1>Задача 3</h1>
+        <h2>Морський бій. Випадковим чином на двовимірному полі розміром 6*6
+            розташовується 5 кораблів. Користувач стріляє вказуючи координати.
+            Гра продовжується поки не потоплено усі кораблі або у користувача не
+            закінчаться снаряди.
+        </h2>
+        <script>
+            const GRID_SIZE = 6;     
+            const TOTAL_SHIPS = 5;   
+            const START_SHELLS = 5;  
+
+            let shellsLeft = START_SHELLS; 
+            let shipsHit = 0;             
+
+            function generateField(size, count) {
+                const field = [];
+                for (let i = 0; i < size; i++) {
+                    field.push(new Array(size).fill(0));
+                }
+                let placed = 0;
+                while (placed < count) {
+                    let r = Math.floor(Math.random() * size);
+                    let c = Math.floor(Math.random() * size);
+                    if (field[r][c] === 0) {
+                        field[r][c] = 1;
+                        placed++;
+                    }
+                }
+                return field;
+            }
+
+            const gameField = generateField(GRID_SIZE, TOTAL_SHIPS);
+            const initialField = gameField.map(row => row.slice());
+
+            alert(`Морський бій! Поле ${GRID_SIZE}x${GRID_SIZE}. Снарядів: ${START_SHELLS}. Кораблів: ${TOTAL_SHIPS}`);
+            while (shellsLeft > 0 && shipsHit < TOTAL_SHIPS) {
+                const row = parseInt(prompt(`Рядок (1-${GRID_SIZE}):\nСнарядів залишилось: ${shellsLeft}\nПотоплено: ${shipsHit}`)) - 1;
+                const col = parseInt(prompt(`Стовпець (1-${GRID_SIZE}):`)) - 1;
+
+                if (isNaN(row) || isNaN(col) || row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) {
+                    alert("Некоректні координати!");
+                    continue;
+                }
+
+                shellsLeft--;
+
+                if (gameField[row][col] === 1) {
+                    shipsHit++;
+                    gameField[row][col] = 0;
+                    alert("ВЛУЧАННЯ!");
+                } else {
+                    alert("МИМО.");
+                }
+            }
+
+            const usedShells = START_SHELLS - shellsLeft;
+
+            document.write("<h2>Результати гри</h2>");
+            document.write(`<p><b>Потоплено кораблів:</b> ${shipsHit} з ${TOTAL_SHIPS}</p>`);
+            document.write(`<p><b>Використано снарядів:</b> ${usedShells} з ${START_SHELLS}</p>`);
+
+            document.write("<h3>Карта розташування кораблів:</h3>");
+            document.write("<table border='1' cellpadding='10' style='border-collapse: collapse;'>");
+
+            for (let i = 0; i < initialField.length; i++) {
+                document.write("<tr>");
+                for (let j = 0; j < initialField[i].length; j++) {
+                    let cellValue = initialField[i][j];
+                    let bgColor = (cellValue === 1) ? "#ffcccc" : "#ffffff";
+                    
+                    document.write(`<td style="background-color: ${bgColor}; text-align: center;">${cellValue}</td>`);
+                }
+                document.write("</tr>");
+            }
+
+            document.write("</table>");
+            document.write("<p>(Де 1 — був корабель, 0 — порожнє місце)</p>");
+        </script>
+    </body>
+</html>

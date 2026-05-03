@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <div>
+            <h2>Знайти суми елементів у вказаній області
+            </h2>
+            <ol
+                style="font-size: 18px; display: flex; flex-direction: column; gap: 10px;">
+                <li>Номери рядків від 0 до половини, стовпці від 0 до половини.
+                </li>
+                <li>Номери рядків від 0 до половини, стовпці від половини до
+                    кінця.
+                </li>
+                <li>Номери рядків (від половини до кінця, стовпці від 0 до
+                    половини).
+                </li>
+                <li>Номери рядків від половини до кінця , стовпці від половини
+                    до кінця.</li>
+                <li> Суму парних рядків.
+                </li>
+                <li>Суму непарних стовпців.
+                </li>
+                <li>У парних рядках – непарні стовпці, у непарних – парні.
+                </li>
+            </ol>
+        </div>
+        <script>
+            function getRandomNumber(minValue, maxValue) {
+                return minValue + Math.floor(Math.random() * (maxValue - minValue + 1));
+            }
+
+            function generateRandomArray(arrayLength, minValue, maxValue) {
+                const arr = [];
+                for (let i = 0; i < arrayLength; i++) {
+                    const randNum = getRandomNumber(minValue, maxValue);
+                    arr.push(randNum);
+                }
+                return arr;
+            }
+
+            function generateRandomTable(rowsNumber, columnsNumber, minValue, maxValue) {
+                const table = [];
+                for (let i = 0; i < rowsNumber; i++) {
+                    const randomRow = generateRandomArray(columnsNumber, minValue, maxValue);
+                    table.push(randomRow);
+                }
+                return table;
+            }
+
+            // Ініціалізація даних
+            const myTable = generateRandomTable(4, 4, 1, 10);
+            const HALF_ROWS = Math.floor(myTable.length / 2);
+            const HALF_COLS = Math.floor(myTable[0].length / 2);
+            const LAST_ROW = myTable.length - 1;
+            const LAST_COL = myTable[0].length - 1;
+
+            // Універсальна функція для знаходження суми в заданому діапазоні індексів
+            function getSumInRegion(matrix, rowStart, rowEnd, colStart, colEnd) {
+                return matrix.reduce((sum, row, rIdx) => {
+                    if (rIdx >= rowStart && rIdx <= rowEnd) {
+                        return sum + row.reduce((rSum, val, cIdx) => {
+                            return (cIdx >= colStart && cIdx <= colEnd) ? rSum + val : rSum;
+                        }, 0);
+                    }
+                    return sum;
+                }, 0);
+            }
+
+            // 5) Сума парних рядків
+            function sumEvenRows(matrix) {
+                return matrix.reduce((sum, row, rowIdx) => {
+                    return (rowIdx % 2 === 0) ? sum + row.reduce((rSum, val) => rSum + val, 0) : sum;
+                }, 0);
+            }
+
+            // 6) Сума непарних стовпців
+            function sumOddCols(matrix) {
+                return matrix.reduce((sum, row) => {
+                    return sum + row.reduce((rSum, val, colIdx) => {
+                        return (colIdx % 2 !== 0) ? rSum + val : rSum;
+                    }, 0);
+                }, 0);
+            }
+
+            // 7) У парних рядках – непарні стовпці, у непарних – парні
+            function sumChessOrder(matrix) {
+                return matrix.reduce((sum, row, rowIdx) => {
+                    return sum + row.reduce((rSum, val, colIdx) => {
+                        return (rowIdx % 2 !== colIdx % 2) ? rSum + val : rSum;
+                    }, 0);
+                }, 0);
+            }
+
+            function renderResults(matrix) {
+                const labels = [
+                    "Рядки від 0 до половини, стовпці від 0 до половини",
+                    "Рядки від 0 до половини, стовпці від 0 до половини",
+                    "Рядки від 0 до половини, від 0 до половини",
+                    "Рядки від половини до кінця, стовпці від половини до кінця",
+                    "Сума парних рядків",
+                    "Сума непарних стовпців",
+                    "У парних рядках – непарні стовпці, у непарних – парні"
+                ];
+
+                const results = [
+                    getSumInRegion(matrix, 0, HALF_ROWS - 1, 0, HALF_COLS - 1),   
+                    getSumInRegion(matrix, 0, HALF_ROWS - 1, HALF_COLS, LAST_COL),
+                    getSumInRegion(matrix, HALF_ROWS, LAST_ROW, 0, HALF_COLS - 1),
+                    getSumInRegion(matrix, HALF_ROWS, LAST_ROW, HALF_COLS, LAST_COL), 
+                    
+                    sumEvenRows(matrix),
+                    sumOddCols(matrix),
+                    sumChessOrder(matrix)
+                ];
+
+                let html = "<h3>Згенерована матриця:</h3><table border='1' style='border-collapse:collapse; margin-bottom: 20px;'>";
+                for (let i = 0; i < matrix.length; i++) {
+                    html += "<tr>";
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        html += `<td style='padding:8px; text-align:center;'>${matrix[i][j]}</td>`;
+                    }
+                    html += "</tr>";
+                }
+                html += "</table>";
+
+                html += "<h3>Результати обчислень:</h3><table border='1' style='border-collapse:collapse; width:100%;'>";
+                html += "<tr style='background:#f2f2f2;'><th>№</th><th>Опис області</th><th>Сума</th></tr>";
+                
+                for (let i = 0; i < labels.length; i++) {
+                    html += `<tr>
+                        <td style='padding:8px; text-align:center;'>${i + 1}</td>
+                        <td style='padding:8px;'>${labels[i]}</td>
+                        <td style='padding:8px; font-weight:bold;'>${results[i]}</td>
+                    </tr>`;
+                }
+                html += "</table>";
+
+                document.write(html);
+            }
+
+            renderResults(myTable);
+        </script>
+    </body>
+</html>
