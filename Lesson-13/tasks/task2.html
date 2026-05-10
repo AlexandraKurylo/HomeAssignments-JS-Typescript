@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Завдання 2</title>
+    </head>
+    <body>
+        <div class="task-block" style="margin-bottom: 50px;">
+            <h1>Задача 3</h1>
+            <p>Виведіть всі можливі наступні комбінації ходів користувачів у
+                грі“Хрестики-нулики”, починаючи з деякої заданої ситуації, тобто
+                маємо двовимірний масив з елементами : 0 - нулик, Х - хрестик,
+                пробіл - ще не зайнято, і вам треба самостійно вивести всі
+                можливі шляхи заповнення ще незаповнених клітинок (де пробіли).
+                Поки можна не підраховувати чи вже є 3 хрестики чи 3 нулики у
+                рядок.
+            </p>
+        </div>
+
+        <script>
+            const initialBoard = [
+                ["X", "0", "X"],
+                [" ", " ", " "],
+                ["0 ", " ", " "]
+            ];
+
+            function printBoard(board, info) {
+                let res = `<div style="display:inline-block; margin: 10px; border: 1px solid #333; padding: 10px; background: #f9f9f9;">`;
+                res += `<b style="color: blue;">${info}</b><br>`;
+                for (let row of board) {
+                    res += `<span>| ${row.join(" | ")} |</span><br>`;
+                }
+                res += `</div>`;
+                document.write(res);
+            }
+
+            function getEmptyCells(board) {
+                const empty = [];
+                for (let r = 0; r < board.length; r++) {
+                    for (let c = 0; c < board[r].length; c++) {
+                        if (board[r][c] === " ") {
+                            empty.push([r, c]); 
+                        }
+                    }
+                }
+                return empty;
+            }
+
+            function getCurrentPlayer(board) {
+                let xCount = 0;
+                let oCount = 0;
+                for (let cell of board.flat()) {
+                    if (cell === "X") xCount++;
+                    if (cell === "0") oCount++;
+                }
+                return xCount <= oCount ? "X" : "0";
+            }
+
+            function generateMoves(currentBoard, step) {
+                const emptyCells = getEmptyCells(currentBoard);
+
+                if (emptyCells.length === 0) return;
+
+                const player = getCurrentPlayer(currentBoard);
+
+                for (let i = 0; i < emptyCells.length; i++) {
+                    const [row, col] = emptyCells[i];
+                    const nextBoard = currentBoard.map(rowArray => [...rowArray]);
+                    nextBoard[row][col] = player;
+                    printBoard(nextBoard, `Крок ${step}: ${player} на [${row},${col}]`);
+                    generateMoves(nextBoard, step + 1);
+                }
+            }
+
+            
+            document.write("<h2>Початковий стан гри:</h2>");
+            printBoard(initialBoard, "Стартова позиція");
+            document.write("<hr>");
+            document.write("<h2>Всі можливі варіанти розвитку подій:</h2>");
+            generateMoves(initialBoard, 1);
+
+        </script>
+    </body>
+</html>

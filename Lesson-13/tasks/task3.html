@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Завдання 3</title>
+    </head>
+    <body>
+        <div class="task-block" style="margin-bottom: 50px;">
+            <h1>
+                Задача 6
+            </h1>
+            <p>З використанням замикань розробити ітератор, тобто функцію, що
+                буде
+                поступово за окремими викликами видавати по одну букву наперед
+                заданого слова. З використанням нього розробити гру «Прекладач».
+                Виводимо для користувача опис цього слова і по одну букву
+                користувач
+                вводить переклад цього слова. Підрахувати кількість вгаданих
+                букв.</p>
+        </div>
+
+        <script>
+            // Ітератор
+            function createLetterIterator(word) {
+                let index = 0;
+
+                function nextLetter() {
+                    if (index < word.length) {
+                        return word[index++];
+                    }
+                    return null;
+                }
+
+                return nextLetter;
+            }
+            
+            // Гра
+            function playTranslator(word, description) {
+                const getLetter = createLetterIterator(word);
+                let correctCount = 0;
+                
+                alert(`Перекладіть слово за буквами!\nПідказка: ${description}`);
+
+                for (let i = 0; i < word.length; i++) {
+                    let expected = getLetter();
+                    let userLetter = prompt(`Введіть букву №${i + 1}`);
+
+                    if (userLetter === null) 
+                        break;
+
+                    if (userLetter.toLowerCase() === expected.toLowerCase()) {
+                        correctCount++;
+                        alert(`Буква ${i + 1}: вгадано (${expected})`);
+                    } else {
+                        alert(`Буква ${i + 1}: помилка (чекали ${expected}, ввели ${userLetter})`);
+                    }
+                }
+
+                document.write(`<h3>Гра завершена!</h3>`);
+                document.write(`<p>Загадане слово: <b>${word}</b></p>`);
+                document.write(`<p>Ваш результат: <b>${correctCount}</b> вгаданих букв з ${word.length}.</p>`);
+            }
+            
+            if (confirm('Почати тестування?')) {
+                playTranslator("JavaScript", "Найпопулярніша мова програмування для вебу");
+            }
+        </script>
+    </body>
+</html>
