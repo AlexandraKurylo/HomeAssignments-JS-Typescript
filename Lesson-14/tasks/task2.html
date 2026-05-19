@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Завдання 2</title>
+    </head>
+    <body>
+
+        <script>
+            const currentDate = {
+                day: 17,
+                month: 5,   // May
+                year: 2026
+            };
+
+            function printInitialDate(dateObj) {
+                document.write("<h2>INITIAL DATE OBJECT</h2>");
+                document.write(`<p><strong>Day:</strong> ${dateObj.day} | <strong>Month:</strong> ${dateObj.month} | <strong>Year:</strong> ${dateObj.year}</p>`);
+                document.write(`<p><strong>Formatted Date:</strong> ${dateObj.day}/${dateObj.month}/${dateObj.year}</p>`);
+                document.write("<hr>");
+            }
+
+            function getFutureYear(date, monthsToAdd) {
+                const totalCurrentMonths = date.year * 12 + (date.month - 1);
+                const totalFutureMonths = totalCurrentMonths + monthsToAdd;
+                const futureYear = Math.floor(totalFutureMonths / 12);
+                return futureYear;
+            }
+
+            printInitialDate(currentDate);
+
+            const testMonths1 = 10;
+            const testMonths2 = 24;  
+            const testMonths3 = 100; 
+
+            document.write("<h2>CALCULATION RESULTS</h2>");
+            document.write(`<p><strong>Result 1:</strong> After adding <b>${testMonths1}</b> months, the year will be: ${getFutureYear(currentDate, testMonths1)}</p>`);
+            document.write(`<p><strong>Result 2:</strong> After adding <b>${testMonths2}</b> months, the year will be: ${getFutureYear(currentDate, testMonths2)}</p>`);
+            document.write(`<p><strong>Result 3:</strong> After adding <b>${testMonths3}</b> months, the year will be: ${getFutureYear(currentDate, testMonths3)}</p>`);
+        </script>
+    </body>
+</html>
