@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 3</title>
+    </head>
+    <body>
+        <h1>Задача 3</h1>
+        <div>
+            <h2>Розробити клас MultChecker для перевірки таблиці множення</h2>
+            <table
+                style="width: 60%; border-collapse: collapse; border: 1px solid black;">
+                <tr>
+                    <td
+                        style="border: 1px solid black; padding: 8px; vertical-align: top; width: 25%;">Поля</td>
+                    <td
+                        style="border: 1px solid black; padding: 8px;">
+                        Число, яке перевіряємо (наприклад, перевірка частини
+                        таблиці множення на 7)<br>
+                        Кількість правильних відповідей<br>
+                        Кількість неправильних відповідей
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        style="border: 1px solid black; padding: 8px; vertical-align: top;">Методи</td>
+                    <td
+                        style="border: 1px solid black; padding: 8px;">
+                        Генерування прикладу (метод випадковим чином визначає
+                        друге число, перше число фіксоване)<br>
+                        Перевірка правильності вказаної відповіді<br>
+                        render - виведення інформації про тестування на екран
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
+            class MultChecker {
+
+                constructor(numberToCheck) {
+                    this.numberToCheck = numberToCheck; 
+                    this.correctAnswersCount = 0;       
+                    this.incorrectAnswersCount = 0;     
+                }
+
+
+                generateRandomFactor() {
+                    return Math.floor(Math.random() * 10) + 1;
+                }
+
+                checkAnswer(factor, userAnswer) {
+                    if (userAnswer === null || userAnswer.trim() === "") {
+                        this.incorrectAnswersCount++;
+                        return false;
+                    }
+
+                    const correctProduct = this.numberToCheck * factor;
+                    
+                    if (parseInt(userAnswer) === correctProduct) {
+                        this.correctAnswersCount++;
+                        return true;
+                    } else {
+                        this.incorrectAnswersCount++;
+                        return false;
+                    }
+                }
+
+                getStatisticsHtml() {
+                    const totalQuestions = this.correctAnswersCount + this.incorrectAnswersCount;
+                    
+                    return `
+                        <h2>MULTIPLICATION CHECKER RESULTS</h2>
+                        <p><b>Tested Number:</b> ${this.numberToCheck}</p>
+                        <p style='color: green;'><strong>Correct Answers:</strong> ${this.correctAnswersCount}</p>
+                        <p style='color: red;'><strong>Incorrect Answers:</strong> ${this.incorrectAnswersCount}</p>
+                        <p><b>Total Questions Answered:</b> ${totalQuestions}</p>
+                        <hr>
+                    `;
+                }
+            }
+
+            const checker = new MultChecker(7);
+            const totalTestRounds = 3;
+
+            document.write("<h2>TESTING</h2>");
+
+            for (let i = 1; i <= totalTestRounds; i++) {
+                const currentFactor = checker.generateRandomFactor();
+                const userAnswer = prompt(`Round ${i}: What is ${checker.numberToCheck} * ${currentFactor}?`);
+                
+                const isCorrect = checker.checkAnswer(currentFactor, userAnswer);
+                
+                if (isCorrect) {
+                    document.write(`<p>Round ${i}: ${checker.numberToCheck} * ${currentFactor} = ${userAnswer} — <b>Correct!</b></p>`);
+                } else {
+                    const correctResult = checker.numberToCheck * currentFactor;
+                    const displayAnswer = (userAnswer === null) ? "Cancelled" : userAnswer;
+                    
+                    document.write(`<p style='color: gray;'>Round ${i}: ${checker.numberToCheck} * ${currentFactor} = ${displayAnswer} — <b>Wrong!</b> (Correct was: ${correctResult})</p>`);
+                }
+            }
+
+            document.write("<hr>");
+
+            const statsHtml = checker.getStatisticsHtml();
+            document.write(statsHtml);
+        </script>
+    </body>
+</html>

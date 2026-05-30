@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 0</h1>
+        <p>Дано два об’єкта. Обидва містять масив цілих чисел. При цьому у
+            одному з них є функція знаходження суми, а у іншому – функція для
+            знаходження добутку тих, які знаходяться між заданими мінімальним і
+            максимальних значенням.
+            Використати обидва методи стосовно обидвох об’єктів (використати
+            call, apply)
+        </p>
+        <script>
+            // Перший об'єкт: містить масив та метод для знаходження суми
+            const firstNumberObject = {
+                numbers: [10, 5, 20, 8, 3, 15],
+                getSum: function() {
+                    return this.numbers.reduce((sum, num) => sum + num, 0);
+                }
+            };
+
+            // Другий об'єкт: містить масив та метод для знаходження добутуц у діапазоні
+            const secondNumberObject = {
+                numbers: [2, 7, 4, 9, 5, 12, 3],
+                getProductInRange: function(min, max) {
+                    let product = 1;
+                    let found = false;
+
+                    for(let i = 0; i < this.numbers.length; i++) {
+                        const currentNum = this.numbers[i];
+                        if(currentNum >= min && currentNum <= max) {
+                            product *= currentNum;
+                            found = true;
+                        }
+                    }
+
+                    return found ? product : 0;
+                }
+            };
+
+
+            function printInitialObjects(obj1, obj2) {
+                document.write("<h2>Initial Object Data</h2>");
+                document.write(`<p><strong>First Object Numbers:</strong> [${obj1.numbers.join(", ")}]</p>`);
+                document.write(`<p><strong>Second Object Numbers:</strong> [${obj2.numbers.join(", ")}]</p>`);
+                document.write("<hr>");
+            }
+
+
+            printInitialObjects(firstNumberObject, secondNumberObject);
+
+            document.write("<h2>Results of testing (apply/call)</h2>");
+            document.write("<hr>");
+
+            // 1. Тестуємо метод 'getSum' для обох об'єктів
+            const sumOfFirst = firstNumberObject.getSum();
+            document.write(`<p><b>Sum of First Object (Native):</b> ${sumOfFirst}</p>`);
+
+            const sumOfSecond = firstNumberObject.getSum.call(secondNumberObject);
+            document.write(`<p><b>Sum of Second Object (Borrowed via .call()):</b> ${sumOfSecond}</p>`);
+
+            document.write("<hr>");
+
+            // 2. Тестуємо метод 'getProductInRange' для обох об'єктів
+            const minRange = 3;
+            const maxRange = 8;
+
+            document.write(`<p><b>Testing product in range from <b>${minRange}</b> to <b>${maxRange}</b>:</b></p>`);
+
+            const productOfSecond = secondNumberObject.getProductInRange(minRange, maxRange);
+            document.write(`<p><b>Product of Second Object (Native):</b> ${productOfSecond}</p>`);
+
+            const productOfFirstCall = secondNumberObject.getProductInRange.call(firstNumberObject, minRange, maxRange);
+            document.write(`<p><b>Product of First Object (Borrowed via .call()):</b> ${productOfFirstCall}</p>`);
+
+            const productOfFirstApply = secondNumberObject.getProductInRange.apply(firstNumberObject, [minRange, maxRange]);
+            document.write(`<p><b>Product of First Object (Borrowed via .apply()):</b> ${productOfFirstApply}</p>`);
+        </script>
+    </body>
+</html>

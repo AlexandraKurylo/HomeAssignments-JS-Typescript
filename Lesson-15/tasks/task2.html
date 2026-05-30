@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>Задача 2</h1>
+        <div>
+            <h2> Створити об’єкт «Авто»
+            </h2>
+            <table
+                style="width: 60%; border-collapse: collapse; border: 1px solid black;">
+                <tr>
+                    <td
+                        style="border: 1px solid black; padding: 8px; font-weight: bold; width: 25%;">Авто</td>
+                    <td style="border: 1px solid black; padding: 8px;"></td>
+                </tr>
+
+                <tr>
+                    <td
+                        style="border: 1px solid black; padding: 8px; vertical-align: top;">Поля(властивості)</td>
+                    <td
+                        style="border: 1px solid black; padding: 8px; ">
+                        Марка<br>
+                        Розмір бака<br>
+                        Кількість наявних літрів<br>
+                        Кількість місць<br>
+                        Кількість пасажирів
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        style="border: 1px solid black; padding: 8px; vertical-align: top;">Методи
+                        (дії)</td>
+                    <td
+                        style="border: 1px solid black; padding: 8px; ">
+                        Заправка на вказану кількість літрів<br>
+                        Виведення кількості пасажирів<br>
+                        Додавання пасажирів<br>
+                        Висадка пасажирів
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+           const car = {
+                brand: "Toyota",
+                tankSize: 60,       
+                availableFuel: 20,  
+                seatsCount: 5,      
+                passengersCount: 1, 
+
+                // 1) Заправка автомобіля. Викидає помилку, якщо бак переповнюється.
+                refuel: function(liters) {
+                    if (liters <= 0) {
+                        throw new Error("Liters to add must be greater than zero.");
+                    }
+
+                    const potentialFuel = this.availableFuel + liters;
+                    
+                    if (potentialFuel > this.tankSize) {
+                        const allowedAmount = this.tankSize - this.availableFuel;
+                        this.availableFuel = this.tankSize;
+                        throw new Error(`Tank overflow! Tried to add ${liters}L, but added only ${allowedAmount}L to full tank.`);
+                    }
+                    
+                    this.availableFuel = potentialFuel;
+                    return liters;
+                },
+
+                // 2) Повертає кількість пасажирів 
+                getPassengersCount: function() {
+                    return this.passengersCount;
+                },
+
+                // 3) Додавання пасажирів. Викидає помилку, якщо не вистачає вільних місць.
+                addPassengers: function(count) {
+                    if (count <= 0) {
+                        throw new Error("Passenger count to add must be greater than zero.");
+                    }
+
+                    const totalPeople = this.passengersCount + count;
+                    
+                    if (totalPeople > this.seatsCount) {
+                        const availableSeats = this.seatsCount - this.passengersCount;
+                        throw new Error(`Not enough seats! Cannot add ${count} passenger(s). Only ${availableSeats} seat(s) left.`);
+                    }
+                    
+                    this.passengersCount = totalPeople;
+                    return count;
+                },
+
+                // 4) Висадка пасажирів. Викидає помилку, якщо намагаємося висадити більше, ніж є в салоні.
+                dropPassengers: function(count) {
+                    if (count <= 0) {
+                        throw new Error("Passenger count to drop must be greater than zero.");
+                    }
+
+                    if (count > this.passengersCount) {
+                        throw new Error(`Drop off failed! Cannot drop ${count} passenger(s). Only ${this.passengersCount} person(s) inside.`);
+                    }
+                    
+                    this.passengersCount -= count;
+                    return count; 
+                }
+            };
+
+
+            function printInitialCarState(vehicle) {
+                document.write("<h2>Initial Car State</h2>");
+                document.write(`<p><b>Brand:</b> ${vehicle.brand}</p>`);
+                document.write(`<p><b>Tank Size:</b> ${vehicle.tankSize} Liters</p>`);
+                document.write(`<p><b>Initial Fuel:</b> ${vehicle.availableFuel} Liters</p>`);
+                document.write(`<p><b>Total Seats:</b> ${vehicle.seatsCount}</p>`);
+                document.write(`<p><b>Initial Passengers:</b> ${vehicle.passengersCount}</p>`);
+                document.write("<hr>");
+            }
+
+            printInitialCarState(car);
+
+            document.write("<h2>Testing Actions</h2>");
+            document.write(`<p><b>Current passengers inside:</b> ${car.getPassengersCount()} person(s).</p>`);
+
+            // Посадка 2 людей (має пройти успішно)
+            document.write("<h3>Action: Boarding 2 people</h3>");
+            try {
+                const boarded = car.addPassengers(2);
+                document.write(`<p style='color: green;'>Success: Boarded ${boarded} passenger(s).</p>`);
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Error:</b> ${error.message}</p>`);
+            }
+            document.write(`<p><b>Current passengers inside:</b> ${car.getPassengersCount()} person(s).</p>`);
+
+            // Спроба посадити ще 5 людей (має викликати помилку браку місць)
+            document.write("<h3>Action: Boarding 5 more people (Overlimit test)</h3>");
+            try {
+                const boarded = car.addPassengers(5);
+                document.write(`<p style='color: green;'>Success: Boarded ${boarded} passenger(s).</p>`);
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+
+            // Висадка 2 людей (має пройти успішно)
+            document.write("<h3>Action: Dropping off 2 people</h3>");
+            try {
+                const dropped = car.dropPassengers(2);
+                document.write(`<p style='color: green;'>Success: Dropped off ${dropped} passenger(s).</p>`);
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Error:</b> ${error.message}</p>`);
+            }
+            document.write(`<p><b>Current passengers inside:</b> ${car.getPassengersCount()} person(s).</p>`);
+
+
+            document.write("<hr>");
+            document.write("<h2>Testing Fueling</h2>");
+            document.write(`<p>Current fuel: ${car.availableFuel}L</p>`);
+
+            // Заправка на 15 літрів (має пройти успішно)
+            document.write("<h3>Action: Fueling +15 Liters</h3>");
+            try {
+                const pumped = car.refuel(15);
+                document.write(`<p style='color: green;'>Success: Added ${pumped}L of fuel.</p>`);
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Error:</b> ${error.message}</p>`);
+            }
+            document.write(`<p>Current fuel: ${car.availableFuel}L</p>`);
+
+            // Заправка на 50 літрів (має викликати помилку переповнення бака)
+            document.write("<h3>Action: Fueling +50 Liters (Overflow test)</h3>");
+            try {
+                const pumped = car.refuel(50);
+                document.write(`<p style='color: green;'>Success: Added ${pumped}L of fuel.</p>`);
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+            document.write(`<p>Final fuel state: <b>${car.availableFuel}L</b> (Full Tank)</p>`);
+        </script>
+    </body>
+</html>
