@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Клас Наплічник</title>
+    </head>
+    <body>
+        <h1>Клас "Наплічник"</h1>
+        <p>Клас із полями #weight і #items. Дозвольте додавати
+            предмети, якщо
+            вага не перевищує 10 кг.
+        </p>
+        <script>
+          // НАПЛІЧНИК (Backpack)
+            class Backpack {
+                #weight;
+                #items;
+
+                constructor(initialWeight, initialItems) {
+                    this.Weight = initialWeight;
+                    this.Items = initialItems;
+                }
+
+                get Weight() { return this.#weight; }
+                set Weight(newWeight) {
+                    if (isNaN(newWeight) || newWeight < 0 || newWeight > 10) {
+                        throw new Error("Вага має бути числом від 0 до 10 кг.");
+                    }
+                    this.#weight = newWeight;
+                }
+
+                get Items() { return [...this.#items]; }
+                set Items(newItems) {
+                    this.#items = [...newItems];
+                }
+
+                addItem(itemName, itemWeight) {
+                    if (isNaN(itemWeight) || itemWeight <= 0) {
+                        throw new Error("Вага предмета повинна бути числом більшим за 0.");
+                    }
+
+                    this.Weight = this.Weight + itemWeight; 
+                    this.#items.push(itemName);
+                    return true;
+                }
+
+                toString() {
+                    const itemsList = this.Items.length > 0 ? this.Items.join(", ") : "Порожньо";
+                    return `Наплічник: ${itemsList} (Вага: ${this.Weight.toFixed(1)}/10 кг)`;
+                }
+            }
+
+            try {
+                const bag = new Backpack(0, []);
+                bag.addItem("Підручник", 4.0);
+                bag.addItem("Ноутбук", 5.5);
+                document.write(`<p style='color: green;'>${bag}</p>`);
+                bag.addItem("Взуття", 2.0); // Помилка ліміту
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Помилка наплічника:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 3</title>
+        <style>
+            table {
+                width: 60%;
+                max-width: 600px;
+                border-collapse: collapse;
+                font-size: 16px;
+                margin: 20px;
+            }
+            th, td {
+                border: 1px solid #000;
+                padding: 10px 15px;
+                vertical-align: top;
+            }
+            th {
+                font-weight: bold;
+                text-align: center;
+                background-color: #ffffff;
+            }
+            td.category {
+                font-weight: bold;
+                width: 15%;
+            }
+            ul {
+                margin: 0;
+                padding-left: 20px;
+                list-style-type: square;
+            }
+            li {
+                margin-bottom: 12px;
+            }
+            li:last-child {
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">Задача 3. Об'єкт "Фірма" (використати
+                        члени-класи)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="category">поля</td>
+                    <td>
+                        <ul>
+                            <li>назва фірми;</li>
+                            <li>дата заснування (рік, місяць);</li>
+                            <li>послуги (назва послуги, вартість, термін
+                                виконання);</li>
+                            <li>адреси філіалів (країна, місто, вулиця, номер
+                                будинку);</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="category">методи</td>
+                    <td>
+                        <ul>
+                            <li>визначення кількості років існування фірми;</li>
+                            <li>виведення всіх філіалів фірми у вказаному
+                                місті;</li>
+                            <li>виведення на екран послуг, що можуть бути
+                                виконані за вказану суму грошей та вказаний
+                                термін часу;</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script>
+            class Company {
+                #name;
+                #inceptionDate;
+                #services;
+                #branches;
+
+                constructor(initialName, initialInceptionDate, initialServices, initialBranches) {
+                    this.Name = initialName;
+                    this.InceptionDate = initialInceptionDate;
+                    this.Services = initialServices;
+                    this.Branches = initialBranches;
+                }
+
+                //Name
+                get Name() { 
+                    return this.#name; 
+                } 
+                
+                set Name(val) {
+                    if (!val) throw new Error("Company name cannot be empty!");
+                    this.#name = val;
+                }
+
+                //InceptionDate
+                get InceptionDate() {
+                    return this.#inceptionDate; 
+                }  
+
+                set InceptionDate(val) {
+                    if (!val || !val.year || !val.month || val.month < 1 || val.month > 12) {
+                        throw new Error("Invalid year or month in inception date!");
+                    }
+                    this.#inceptionDate = val;
+                }
+
+                // Services
+                get Services() { 
+                    return this.#services; 
+                }
+
+                set Services(servicesArray) {
+                    if (!Array.isArray(servicesArray)) throw new Error("Services must be an array!");
+
+                    for (const service of servicesArray) {
+                        if (!service.name) throw new Error("Each service must have a name!");
+                        if (service.price <= 0 || service.durationDays <= 0) {
+                            throw new Error(`Service "${service.name}" has invalid price or duration!`);
+                        }
+                    }
+                    this.#services = servicesArray;
+                }
+
+                //Branches
+                get Branches() { 
+                    return this.#branches; 
+                }
+
+                set Branches(branchesArray) {
+                    if (!Array.isArray(branchesArray)) throw new Error("Branches must be an array!");
+                    for (const b of branchesArray) {
+                        if (!b.country || !b.city || !b.street || !b.buildingNumber) {
+                            throw new Error("Each branch must have a full address!");
+                        }
+                    }
+                    this.#branches = branchesArray;
+                }
+
+                getAge() {
+                    const currentYear = 2026; 
+                    const age = currentYear - this.InceptionDate.year;
+                    return age >= 0 ? age : 0;
+                }
+
+                getBranchesByCity(cityName) {
+                    if (!cityName) throw new Error("City name cannot be empty!");
+
+                    const filtered = this.#branches.filter(b => b.city.toLowerCase() === cityName.toLowerCase());
+
+                    if (filtered.length === 0) return `No branches found in "${cityName}".`;
+
+                    return filtered
+                        .map(b => `${b.country}, city: ${b.city}, ${b.street} ${b.buildingNumber}`)
+                        .join("<br>");
+                }
+
+                getAvailableServices(maxPrice, maxDurationDays) {
+                    if (maxPrice < 0 || maxDurationDays < 0) throw new Error("Constraints must be positive!");
+                    const suitable = this.#services.filter(s => s.price <= maxPrice && s.durationDays <= maxDurationDays);
+
+                    if (suitable.length === 0) return "No services found matching your criteria.";
+
+                    return suitable
+                        .map(s => `${s.name} — $${s.price}, ${s.durationDays} days`)
+                        .join("<br>");
+                }
+
+                toString() {
+                    return `Company "${this.Name}" (Founded: ${this.InceptionDate.month}.${this.InceptionDate.year}, Age: ${this.getAge()} years). Services: ${this.#services.length}, Branches: ${this.#branches.length}.`;
+                }
+            }
+
+
+            document.write("<h2>COMPANY TEST</h2>");
+
+            try {
+                const myFirm = new Company(
+                    "CyberTech", 
+                    { year: 2018, month: 4 }, 
+                    [
+                        { name: "Web Development", price: 1500, durationDays: 14 },
+                        { name: "UI/UX Design", price: 600, durationDays: 5 },
+                        { name: "SEO Optimization", price: 400, durationDays: 10 }
+                    ],
+                    [
+                        { country: "Ukraine", city: "Kyiv", street: "Khreshchatyk", buildingNumber: "12" },
+                        { country: "Ukraine", city: "Odesa", street: "Deribasivska", buildingNumber: "5" }
+                    ]
+                );
+
+                document.write(`<p><b>Info:</b> ${myFirm}</p>`);
+                document.write("<hr>");
+
+                document.write("<h3>Search branches in 'Kyiv':</h3>");
+                document.write(`<p>${myFirm.getBranchesByCity("Kyiv")}</p>`);
+                document.write("<hr>");
+
+                document.write("<h3>Available services (Budget $700, Max 12 days):</h3>");
+                document.write(`<p>${myFirm.getAvailableServices(700, 12)}</p>`);
+                document.write("<hr>");
+
+                document.write("<p><i>Action: Trying to add bad service without price...</i></p>");
+                myFirm.Services = [{ name: "Broken Service", durationDays: 5 }]; 
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

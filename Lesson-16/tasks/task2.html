@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Клас Магазин</title>
+    </head>
+    <body>
+        <h1>Клас "Магазин"</h1>
+        <p>Клас із полями #stock (масив з товарами (назва, кількість))
+            і #revenue. Дозвольте продавати товар, якщо є запас.
+        </p>
+
+        <script>
+           //МАГАЗИН (Store)
+            class Store {
+                #stock;
+                #revenue;
+
+                constructor(initialStock, initialRevenue) {
+                    this.Stock = initialStock;
+                    this.Revenue = initialRevenue;
+                }
+
+                get Revenue() { return this.#revenue; }
+                set Revenue(val) {
+                    if (isNaN(val) || val < 0) {
+                        throw new Error("Прибуток має бути коректним числом і не може бути від'ємним!");
+                    }
+                    this.#revenue = val;
+                }
+
+                get Stock() { return this.#stock; }
+                set Stock(productsArray) {
+                    for (const item of productsArray) {
+                        if (!item.name) {
+                            throw new Error("У кожного товару повинно бути ім'я!");
+                        }
+                        if (!('quantity' in item) || isNaN(item.quantity) || item.quantity < 0) {
+                            throw new Error(`Товар "${item.name}" має мати коректну кількість 0 або більше!`);
+                        }
+                        if (!('price' in item) || isNaN(item.price) || item.price <= 0) {
+                            throw new Error(`Товар "${item.name}" має мати коректну ціну більшу за 0!`);
+                        }
+                    }
+                    this.#stock = productsArray;
+                }
+
+                sellProduct(productName, quantityToBuy) {
+                    if (isNaN(quantityToBuy) || quantityToBuy <= 0) {
+                        throw new Error("Кількість для купівлі повинна бути числом більшим за 0!");
+                    }
+
+                    const product = this.#stock.find(item => item.name.toLowerCase() === productName.toLowerCase());
+
+                    if (!product) {
+                        throw new Error(`Товар "${productName}" не знайдено на складі!`);
+                    }
+                    if (product.quantity < quantityToBuy) {
+                        throw new Error(`Недостатньо товару "${product.name}" на складі!`);
+                    }
+
+                    product.quantity -= quantityToBuy;
+                    this.Revenue = this.Revenue + (quantityToBuy * product.price);
+                    return true;
+                }
+
+                toString() {
+                    const stockStatus = this.#stock
+                        .map(item => `${item.name} (К-сть: ${item.quantity}, Ціна: ${item.price}грн)`)
+                        .join(" | ");
+                    
+                    return `Магазин: Прибуток = ${this.Revenue}грн | Товари: [${stockStatus || "Порожньо"}]`;
+                }
+            }
+
+            try {
+                const store = new Store([
+                    { name: "Телефон", quantity: 5, price: 300 },
+                    { name: "Годинник", quantity: 2, price: 150 }
+                ], 200);
+                store.sellProduct("Годинник", 2);
+                document.write(`<p style='color: green;'>${store}</p>`);
+                store.sellProduct("Телефон", 5 * "текст"); // Передаємо NaN! (помилка валідації кількості)
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Помилка магазину:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

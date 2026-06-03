@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Клас Піцерія</title>
+    </head>
+    <body>
+        <h1>Клас "Піцерія"</h1>
+        <p> Клас із полями #ingredients і #orders. Замовлення можливі, якщо є
+            інгредієнти.
+        </p>
+
+        <script>
+            // ПІЦЕРІЯ (Pizzeria)
+            class Pizzeria {
+                #ingredients;
+                #orders;
+
+                constructor(initialIngredients, initialOrders) {
+                    this.Ingredients = initialIngredients;
+                    this.Orders = initialOrders;
+                }
+
+                get Ingredients() { 
+                    return this.#ingredients; 
+                }
+
+                set Ingredients(val) { 
+                    this.#ingredients = val; 
+                }
+
+                get Orders() { 
+                    return this.#orders; 
+                }
+
+                set Orders(val) { 
+                    this.#orders = val; 
+                }
+
+                placeOrder(pizzaName, requiredIngredients) {
+                    for (const [ingredient, amount] of Object.entries(requiredIngredients)) {
+                        const availableAmount = this.#ingredients[ingredient] || 0;
+                        if (isNaN(amount) || availableAmount < amount) {
+                            throw new Error(`Не вдалося приготувати "${pizzaName}". Не вистачає інгредієнта: "${ingredient}"!`);
+                        }
+                    }
+
+                    for (const [ingredient, amount] of Object.entries(requiredIngredients)) {
+                        this.#ingredients[ingredient] -= amount;
+                    }
+
+                    this.#orders.push(pizzaName);
+                    return true;
+                }
+
+                toString() {
+                    const ingredientsStatus = Object.entries(this.Ingredients)
+                        .map(([ing, count]) => `${ing}: ${count}`)
+                        .join(", ");
+                    
+                    const ordersList = this.Orders.length > 0 ? this.Orders.join(", ") : "Немає";
+                    
+                    return `Піцерія: Замовлення: [${ordersList}] | Залишок інгредієнтів: {${ingredientsStatus}}`;
+                }
+            }
+
+            try {
+                const pizzeria = new Pizzeria({ тісто: 2, сир: 5 }, ["Маргарита"]);
+                pizzeria.placeOrder("Сирна Піца", { тісто: 1, сир: 3 });
+                document.write(`<p style='color: green;'>🍕 ${pizzeria}</p>`);
+                pizzeria.placeOrder("Карбонара", { тісто: 1, сир: 3 }); // помилка нестачі сиру
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Помилка піцерії:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 2</title>
+    </head>
+    <body>
+        <h1>Задача 2</h1>
+        <p> Створити клас TMoney для роботи з грошовими сумами. Сума повинна
+            зберігатися у вигляді доларового еквіваленту. Реалізувати методи
+            додавання/вилучення грошової маси, вказуючи необхідну суму у
+            гривнях, та визначення курсу долара, при якому сума у гривнях
+            збільшиться на 100. Курс долара зберігати в окремому полі.
+        </p>
+        <script>
+            class TMoney {
+                #dollars;     
+                #exchangeRate; 
+
+                constructor(initialDollars, initialRate) {
+                    this.ExchangeRate = initialRate;
+                    this.Dollars = initialDollars;
+                }
+
+                get ExchangeRate() {
+                    return this.#exchangeRate;
+                }
+
+                set ExchangeRate(val) {
+                    if (typeof val !== 'number' || isNaN(val) || val <= 0) {
+                        throw new Error("Exchange rate must be a valid number greater than 0!");
+                    }
+                    this.#exchangeRate = val;
+                }
+
+                get Dollars() {
+                    return this.#dollars;
+                }
+
+                set Dollars(val) {
+                    if (typeof val !== 'number' || isNaN(val) || val < 0) {
+                        throw new Error("Money sum cannot be negative!");
+                    }
+                    this.#dollars = val;
+                }
+
+                get BalanceInUah() {
+                    return this.Dollars * this.ExchangeRate;
+                }
+
+
+                // 1. Додавання грошової маси, вказуючи суму в гривнях
+                addMoneyInUah(uahAmount) {
+                    if (typeof uahAmount !== 'number' || uahAmount <= 0) {
+                        throw new Error("Amount to add must be greater than 0 UAH!");
+                    }
+                    
+                    const dollarsToAdd = uahAmount / this.ExchangeRate;
+                    this.Dollars += dollarsToAdd; 
+                    return this;
+                }
+
+                // 2. Вилучення грошової маси, вказуючи суму в гривнях
+                withdrawMoneyInUah(uahAmount) {
+                    if (typeof uahAmount !== 'number' || uahAmount <= 0) {
+                        throw new Error("Amount to withdraw must be greater than 0 UAH!");
+                    }
+
+                    const dollarsToWithdraw = uahAmount / this.ExchangeRate;
+
+                    if (this.Dollars < dollarsToWithdraw) {
+                        const availableUah = this.BalanceInUah;
+                        throw new Error(`Not enough money! Requested: ${uahAmount} UAH. Available: ${availableUah.toFixed(2)} UAH.`);
+                    }
+
+                    this.Dollars -= dollarsToWithdraw;
+                    return this;
+                }
+
+                // 3. Визначення курсу долара, при якому сума у гривнях збільшиться на 100
+                getTargetRateForPlus100Uah() {
+                    if (this.Dollars === 0) {
+                        throw new Error("Cannot calculate target rate because the dollar balance is 0. Any exchange rate multiplied by 0 remains 0!");
+                    }
+
+                    const targetRate = this.ExchangeRate + (100 / this.Dollars);
+                    return targetRate;
+                }
+
+                toString() {
+                    return `Wallet status: $${this.Dollars.toFixed(2)} USD (approx. ${this.BalanceInUah.toFixed(2)} UAH) | Current Rate: 1 USD = ${this.ExchangeRate.toFixed(2)} UAH`;
+                }
+            }
+
+
+            document.write("<h2>TESTING CLASS TMoney</h2>");
+
+            try {
+                // 1. Створюємо гаманець: початковий баланс $50, курс 41.50 грн за долар
+                const myWallet = new TMoney(50, 41.50);
+                document.write(`<p><b>Start:</b> ${myWallet}</p>`);
+
+                // 2. Додаємо 1000 гривень
+                document.write("<p><i>Action: Adding 1000 UAH...</i></p>");
+                myWallet.addMoneyInUah(1000);
+                document.write(`<p style='color: green;'>Balance after deposit: <b>${myWallet}</b></p>`);
+
+                // 3. Знімаємо 500 гривень
+                document.write("<p><i>Action: Withdrawing 500 UAH...</i></p>");
+                myWallet.withdrawMoneyInUah(500);
+                document.write(`<p style='color: green;'>Balance after withdrawal: <b>${myWallet}</b></p>`);
+
+                document.write("<br>");
+
+                // 4. Визначаємо цільовий курс для збільшення капіталу на 100 грн
+                const targetRate = myWallet.getTargetRateForPlus100Uah();
+                document.write(`<p><b>Exchange rate calculation:</b> To make your current balance in UAH increase by exactly 100 UAH, the dollar exchange rate must rise to: <span style='color: blue;'><b>${targetRate.toFixed(4)} UAH</b></span></p>`);
+
+                document.write("<br>");
+
+                // 5. Тест захисту від перевищення балансу
+                document.write("<p><i>Action: Trying to withdraw an amount (50 000 UAH)...</i></p>");
+                myWallet.withdrawMoneyInUah(50000);
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

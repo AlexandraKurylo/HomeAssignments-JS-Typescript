@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Задача 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <p> Створити клас TDate для роботи із датами у форматі
+            “день.місяць.рік”. Дата представляється структурою із трьома полями.
+            Реалізувати методи збільшення/зменшення дати на певну кількість
+            днів, місяців чи років. Введення та виведення дати реалізувати за
+            допомогою методу toString.
+        </p>
+
+        <script>
+            class TDate {
+                #day;
+                #month;
+                #year;
+
+                constructor(initialDay, initialMonth, initialYear) {
+                    this.#year = 2026; 
+                    this.Year = initialYear;
+                    this.Month = initialMonth;
+                    this.Day = initialDay;
+                }
+
+                // Рік є високосним, якщо він ділиться на 4 без залишку, але не ділиться на 100, 
+                // або якщо він ділиться на 400.
+                #isLeapYear(year) {
+                    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+                }
+
+                #getDaysInMonth(month, year) {
+                    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+                    
+                    if (month === 2 && this.#isLeapYear(year)) {
+                        return 29;
+                    }
+                    
+                    return daysInMonths[month - 1]; 
+                }
+
+                get Year() {
+                    return this.#year;
+                }
+                set Year(val) {
+                    if (typeof val !== 'number' || isNaN(val) || val < 1) {
+                        throw new Error("Year must be a positive number!");
+                    }
+                    this.#year = val;
+                }
+
+                get Month() {
+                    return this.#month;
+                }
+
+                set Month(val) {
+                    if (typeof val !== 'number' || val < 1 || val > 12) {
+                        throw new Error("Month must be between 1 and 12!");
+                    }
+                    this.#month = val;
+                }
+
+                get Day() {
+                    return this.#day;
+                }
+
+                set Day(val) {
+                    if (typeof val !== 'number' || val < 1) {
+                        throw new Error("Day must be a positive number!");
+                    }
+                    
+                    const maxDays = this.#getDaysInMonth(this.Month, this.Year);
+                    if (val > maxDays) {
+                        throw new Error(`Invalid day! Month ${this.Month} in year ${this.Year} has only ${maxDays} days.`);
+                    }
+                    
+                    this.#day = val;
+                }
+
+                // 1) Збільшення дати на певну кількість днів
+                addDays(daysCount) {
+                    if (daysCount < 0) return this.subtractDays(-daysCount); // Якщо передали мінус, віднімаємо
+                    
+                    let totalDays = this.Day + daysCount;
+
+                    while (totalDays > this.#getDaysInMonth(this.Month, this.Year)) {
+                        totalDays -= this.#getDaysInMonth(this.Month, this.Year);
+                        this.#month++;
+
+                        if (this.#month > 12) {
+                            this.#month = 1;
+                            this.#year++;
+                        }
+                    }
+                    this.#day = totalDays; 
+                    return this; 
+                }
+
+                // 2) Зменшення дати на певну кількість днів
+                subtractDays(daysCount) {
+                    if (daysCount < 0) return this.addDays(-daysCount);
+                    
+                    let currentDays = this.Day - daysCount;
+                    while (currentDays <= 0) {
+                        this.#month--;
+                        if (this.#month < 1) {
+                            this.#month = 12;
+                            this.#year--;
+                            if (this.#year < 1) throw new Error("Year cannot fall below 1!");
+                        }
+                        currentDays += this.#getDaysInMonth(this.Month, this.Year);
+                    }
+                    this.#day = currentDays;
+                    return this;
+                }
+
+                // 3) Збільшення на певну кількість місяців
+                addMonths(monthsCount) {
+                    if (monthsCount < 0) return this.subtractMonths(-monthsCount);
+                    
+                    let totalMonths = this.Month + monthsCount;
+                    
+                    if (totalMonths > 12) {
+                        const yearsToAdd = Math.floor((totalMonths - 1) / 12);
+                        this.Year += yearsToAdd;
+                        totalMonths = ((totalMonths - 1) % 12) + 1;
+                    }
+                    this.#month = totalMonths;
+                    
+                    const maxDays = this.#getDaysInMonth(this.Month, this.Year);
+                    if (this.Day > maxDays) {
+                        this.#day = maxDays; 
+                    }
+                    return this;
+                }
+
+                // 4) Зменшення на певну кількість місяців
+                subtractMonths(monthsCount) {
+                    if (monthsCount < 0) return this.addMonths(-monthsCount);
+                    
+                    let totalMonths = this.Month - monthsCount;
+                    
+                    while (totalMonths <= 0) {
+                        this.Year--;
+                        if (this.Year < 1) throw new Error("Year cannot fall below 1!");
+                        totalMonths += 12;
+                    }
+                    this.#month = totalMonths;
+                    const maxDays = this.#getDaysInMonth(this.Month, this.Year);
+                    if (this.Day > maxDays) {
+                        this.#day = maxDays;
+                    }
+                    return this;
+                }
+
+                // 5) Збільшення на певну кількість років
+                addYears(yearsCount) {
+                    if (yearsCount < 0) return this.subtractYears(-yearsCount);
+                    this.Year += yearsCount;
+                    
+                    // Коригуємо лютий, якщо перестрибнули з високосного року на звичайний (29 лютого -> 28 лютого)
+                    const maxDays = this.#getDaysInMonth(this.Month, this.Year);
+                    if (this.Day > maxDays) {
+                        this.#day = maxDays;
+                    }
+                    return this;
+                }
+
+                // 6) Зменшення на певну кількість років
+                subtractYears(yearsCount) {
+                    if (yearsCount < 0) return this.addYears(-yearsCount);
+                    this.Year -= yearsCount;
+                    if (this.Year < 1) throw new Error("Year cannot fall below 1!");
+                    
+                    const maxDays = this.#getDaysInMonth(this.Month, this.Year);
+                    if (this.Day > maxDays) {
+                        this.#day = maxDays;
+                    }
+                    return this;
+                }
+
+                toString() {
+                    const d = String(this.Day).padStart(2, '0');
+                    const m = String(this.Month).padStart(2, '0');
+                    const y = String(this.Year).padStart(4, '0');
+                    return `${d}.${m}.${y}`;
+                }
+            }
+
+
+            document.write("<h2>TESTING CLASS TDate</h2>");
+
+           try {
+                const date = new TDate(28, 2, 2024);
+                document.write(`<p>Initial date: <b>${date}</b> (Leap year)</p>`);
+
+                date.addDays(1);
+                document.write(`<p>Added 1 day: <b>${date}</b></p>`);
+
+                date.addDays(1);
+                document.write(`<p>Added another 1 day: <b>${date}</b></p>`);
+
+                document.write("<br>");
+
+                const myBirthday = new TDate(20, 4, 2007);
+                document.write(`<p>New date: <b>${myBirthday}</b></p>`);
+                
+                myBirthday.addMonths(10);
+                document.write(`<p>Added 10 months: <b>${myBirthday}</b></p>`);
+                
+                myBirthday.addYears(5);
+                document.write(`<p>Added 5 years: <b>${myBirthday}</b></p>`);
+
+                myBirthday.subtractDays(45);
+                document.write(`<p>Subtracted 45 days: <b>${myBirthday}</b></p>`);
+
+                document.write("<br>");
+
+                // Тест захисту від некоректного введення даних
+                document.write("<p><i>Attempting to create a non-existent date (April 31st)...</i></p>");
+                const wrongDate = new TDate(31, 4, 2026); 
+                
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Validation Error:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>
