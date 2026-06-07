@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task 1</title>
+    </head>
+    <body>
+        <h1>Задача 1</h1>
+        <p>Створити клас, що дозволяє виконувати такі операції над масивами:
+            знаходження кількості додатних, кількості від’ємних, кількість
+            входжень деякого числа (статичні методи)
+        </p>
+        <script>
+            class ArrayStats {
+                constructor() {
+                    throw new Error("This is a static utility class and cannot be instantiated.");
+                }
+
+                static countPositive(arr) {
+                    if (!Array.isArray(arr)) 
+                        throw new Error("Argument must be a valid array!");
+                    
+                    return arr.reduce((count, num) => {
+                        if (isNaN(num)) 
+                            throw new Error("Array contains NaN or an invalid number!");
+                        return num > 0 ? count + 1 : count;
+                    }, 0);
+                }
+
+                static countNegative(arr) {
+                    if (!Array.isArray(arr)) 
+                        throw new Error("Argument must be a valid array!");
+
+                    return arr.reduce((count, num) => {
+                        if (isNaN(num)) 
+                            throw new Error("Array contains NaN or an invalid number!");
+                        return num < 0 ? count + 1 : count;
+                    }, 0);
+                }
+
+                static countOccurrences(arr, targetNumber) {
+                    if (!Array.isArray(arr)) 
+                        throw new Error("Argument must be a valid array!");
+                    if (isNaN(targetNumber)) 
+                        throw new Error("Target number cannot be NaN!");
+
+                    return arr.reduce((count, num) => {
+                        if (isNaN(num)) 
+                            throw new Error("Array contains NaN or an invalid number!");
+                        return num === targetNumber ? count + 1 : count;
+                    }, 0);
+                }
+
+                static toString(arr) {
+                    if (!Array.isArray(arr)) 
+                        throw new Error("Argument must be a valid array!");
+                    
+                    return `Array Analysis: Total elements = ${arr.length}, Positive elements = ${this.countPositive(arr)}, Negative elements = ${this.countNegative(arr)}.`;
+                }
+            }
+
+            // TESTING THE CLASS
+            try {
+                const numbers = [5, -3, 10, 0, -2, 5, -8, 5, 12];
+                
+                document.write(`<h2>Testing ${ArrayStats.name} Class</h2>`);
+                document.write(`<p><b>Target Array:</b> [${numbers.join(', ')}]</p>`);
+
+                document.write(`<p><b>Method toString output:</b> ${ArrayStats.toString(numbers)}</p>`);
+                document.write("<hr>");
+                
+                document.write(`<p>Positive numbers count: <b>${ArrayStats.countPositive(numbers)}</b></p>`); 
+                document.write(`<p>Negative numbers count: <b>${ArrayStats.countNegative(numbers)}</b></p>`); 
+                document.write(`<p>Occurrences of number 5: <b>${ArrayStats.countOccurrences(numbers, 5)}</b></p>`); 
+
+                document.write("<hr>");
+                document.write("<p><i>Action: Testing NaN protection system...</i></p>");
+                
+                const brokenNumbers = [1, -2, NaN, 4];
+                ArrayStats.countPositive(brokenNumbers); 
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

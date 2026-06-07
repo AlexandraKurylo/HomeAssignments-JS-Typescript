@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            Task 5
+        </title>
+    </head>
+    <body>
+        <h1>Задача 5</h1>
+        <div> <p>
+                Дано два класи MultChecker (клас для перевірки таблиці множення
+                -
+                рандомно генеруються числа, які треба перемножати), AddChecker
+                (клас
+                для перевірки додавання - рандомно генеруються числа у заданому
+                діапазоні, які треба додавати). Обидва класи надсилають
+                результати
+                тестування
+                об'єкту класу Hystory, який зберігає історію тестування у масиві у вигляді об'єктів
+            </p>
+            <p>
+                Приклад.
+                testsList= [
+                {firstNum:1, secondNum:5,opration:’*’, userAnswer:7,
+                correctAnswer:5},
+                {firstNum:3, secondNum:4,opration:’+’, userAnswer:7,
+                correctAnswer:7},
+                ]
+            </p>
+            <p>
+                Можна створити окремий клас TestData, який описує один такий
+                тест і
+                у якому будуть ці поля.
+            </p>
+            <p>
+                Розробити клас TestManager, який використовуючи ці класи за
+                допомогою таймера періодично генерує якісь N задач (рандомно
+                вибираємо, що опитувати: додавання чи множення) і проводить
+                опитування. Результати тестування додаються в об’єкт History.
+                Зробити так, щоб об'єкт такого класу можна було створити тільки
+                один. Коли зроблено ці N задач вивести усю історію на екран.
+            </p>
+
+        </div>
+        <script>
+            class TestData {
+                constructor(firstNum, secondNum, operation, userAnswer, correctAnswer) {
+                    this.firstNum = firstNum;
+                    this.secondNum = secondNum;
+                    this.operation = operation;
+                    this.userAnswer = userAnswer;
+                    this.correctAnswer = correctAnswer;
+                }
+            }
+
+            class History {
+                #testsList = [];
+
+                addTest(testData) {
+                    if (!(testData instanceof TestData)) 
+                        throw new Error("Invalid test data type!");
+                    this.#testsList = [...this.#testsList, testData];
+                }
+
+                getTests() {
+                    return this.#testsList;
+                }
+            }
+
+            class MultChecker {
+                static generateTest(min = 1, max = 10) {
+                    const firstNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    const secondNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    const correctAnswer = firstNum * secondNum;
+                    return { firstNum, secondNum, operation: "*", correctAnswer };
+                }
+            }
+
+            class AddChecker {
+                static generateTest(min = 1, max = 50) {
+                    const firstNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    const secondNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    const correctAnswer = firstNum + secondNum;
+                    return { firstNum, secondNum, operation: "+", correctAnswer };
+                }
+            }
+
+            class TestManager {
+                static #instance = null;
+
+                #history;
+                #totalTasks;
+                #currentTaskCount = 0;
+                #intervalSeconds;
+
+                constructor(totalTasks, intervalSeconds) {
+                    if (TestManager.#instance) {
+                        throw new Error("Error: TestManager already exists! Use TestManager.getInstance()");
+                    }
+
+                    this.#history = new History();
+                    this.#totalTasks = totalTasks;
+                    this.#intervalSeconds = intervalSeconds;
+
+                    TestManager.#instance = this;
+                }
+
+                static getInstance(totalTasks, intervalSeconds) {
+                    if (!TestManager.#instance) {
+                        TestManager.#instance = new TestManager(totalTasks, intervalSeconds);
+                    }
+                    return TestManager.#instance;
+                }
+
+                startTesting() {
+                    document.write(`<h2>Starting Test Session (${this.#totalTasks} tasks)</h2>`);
+                    this.#runNextTask();
+                }
+
+                #runNextTask() {
+                    if (this.#currentTaskCount >= this.#totalTasks) {
+                        this.#finishTesting();
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        this.#currentTaskCount++;
+                        
+                        const isMultiplication = Math.random() < 0.5;
+                        const task = isMultiplication ? MultChecker.generateTest(2, 15) : AddChecker.generateTest(10, 100);
+
+                        const promptMessage = `Task #${this.#currentTaskCount}:  ${task.firstNum} ${task.operation} ${task.secondNum} = ?`;
+                        const userInput = prompt(promptMessage);
+                        const userAnswer = userInput === null ? NaN : parseInt(userInput, 10);
+
+                        const resultRecord = new TestData(
+                            task.firstNum,
+                            task.secondNum,
+                            task.operation,
+                            userAnswer,
+                            task.correctAnswer
+                        );
+
+                        this.#history.addTest(resultRecord);
+
+                        const isCorrect = userAnswer === task.correctAnswer;
+                        document.write(`<p>Task #${this.#currentTaskCount}: ${task.firstNum} ${task.operation} ${task.secondNum} | Your answer: ${isNaN(userAnswer) ? "No answer" : userAnswer} | Correct: ${task.correctAnswer} -> ${isCorrect ? "<b style='color:green;'>Correct</b>" : "<b style='color:red;'>Wrong</b>"}</p>`);
+
+                        this.#runNextTask();
+                    }, this.#intervalSeconds * 1000);
+                }
+
+                #finishTesting() {
+                    document.write("<hr><h2>Final Testing History</h2>");
+                    const allTests = this.#history.getTests();
+
+                    document.write("<table border='1' cellpadding='10' style='border-collapse: collapse; text-align: center;'>");
+                    document.write("<tr><th>#</th><th>Expression</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>");
+                    
+                    allTests.forEach((test, index) => {
+                        const isCorrect = test.userAnswer === test.correctAnswer;
+                        const status = isCorrect ? "<span style='color:green;'>✔ Pass</span>" : "<span style='color:red;'>❌ Fail</span>";
+                        const displayAnswer = isNaN(test.userAnswer) ? "N/A" : test.userAnswer;
+                        
+                        document.write(`<tr>
+                            <td>${index + 1}</td>
+                            <td>${test.firstNum} ${test.operation} ${test.secondNum}</td>
+                            <td><b>${displayAnswer}</b></td>
+                            <td><b>${test.correctAnswer}</b></td>
+                            <td><b>${status}</b></td>
+                        </tr>`);
+                    });
+                    
+                    document.write("</table>");
+                }
+            }
+
+            // RUNNING THE TEST
+            try {
+                const manager = TestManager.getInstance(5, 2);
+                manager.startTesting();
+
+                const fakeManager = TestManager.getInstance(10, 1);
+                document.write(`<p>Singleton check (manager === fakeManager): <b>${manager === fakeManager}</b></p><hr>`);
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

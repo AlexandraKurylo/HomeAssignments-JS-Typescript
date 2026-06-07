@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task 4</title>
+    </head>
+    <body>
+        <h1>Задача 4</h1>
+        <p> Склад. База товарів, які зберігаються на складі: назва товару,
+            одиниця виміру, кількість, фірма виробник (назва, реєстраційний
+            номер). Організувати реєстрацію/відвантаження товарів, фільтрація за
+            назвою товару, фільтрація за назвою фірми
+        </p>
+
+        <script>
+            class Warehouse {
+                #stock;
+
+                constructor(initialStock = []) {
+                    this.Stock = initialStock;
+                }
+
+                get Stock() { 
+                    return this.#stock; 
+                }
+
+                set Stock(productsArray) {
+                    if (!Array.isArray(productsArray)) 
+                        throw new Error("Product database must be an array!");
+
+                    for (const item of productsArray) {
+                        if (!item.name || !item.unit) {
+                            throw new Error("Each product must have a name and a unit of measurement!");
+                        }
+                        if (isNaN(item.quantity) || item.quantity < 0) {
+                            throw new Error(`Product "${item.name}" must have a valid quantity (0 or more)!`);
+                        }
+                        if (!item.manufacturer || !item.manufacturer.name || !item.manufacturer.regNumber) {
+                            throw new Error(`Product "${item.name}" must contain full manufacturer details (name, registration number)!`);
+                        }
+                    }
+                    this.#stock = productsArray;
+                }
+
+                registerProduct(newProduct) {
+                    const existingProduct = this.#stock.find(item => 
+                        item.name.toLowerCase() === newProduct.name.toLowerCase() &&
+                        item.manufacturer.name.toLowerCase() === newProduct.manufacturer.name.toLowerCase()
+                    );
+
+                    if (existingProduct) {
+                        existingProduct.quantity += newProduct.quantity;
+                        document.write(`<p style='color: green;'>📥 Increased quantity of "${existingProduct.name}" by +${newProduct.quantity} ${existingProduct.unit}.</p>`);
+                    } else {
+                        this.Stock = [...this.#stock, newProduct];
+                        document.write(`<p style='color: green;'>📥 Registered new product: "${newProduct.name}" (${newProduct.quantity} ${newProduct.unit}).</p>`);
+                    }
+                }
+
+                shipProduct(productName, manufacturerName, quantityToShip) {
+                    if (isNaN(quantityToShip) || quantityToShip <= 0) {
+                        throw new Error("Quantity to ship must be a positive number!");
+                    }
+
+                    const product = this.#stock.find(item => 
+                        item.name.toLowerCase() === productName.toLowerCase() &&
+                        item.manufacturer.name.toLowerCase() === manufacturerName.toLowerCase()
+                    );
+
+                    if (!product) {
+                        throw new Error(`Product "${productName}" from "${manufacturerName}" was not found in the warehouse!`);
+                    }
+                    if (product.quantity < quantityToShip) {
+                        throw new Error(`Cannot ship ${quantityToShip} ${product.unit}. Only ${product.quantity} ${product.unit} of "${product.name}" available.`);
+                    }
+
+                    product.quantity -= quantityToShip;
+                    document.write(`<p style='color: blue;'>📦 Shipped: "${productName}" from "${manufacturerName}" | Quantity: ${quantityToShip} ${product.unit}.</p>`);
+                    return true;
+                }
+
+                filterByProductName(searchName) {
+                    if (!searchName) 
+                        return this.#stock;
+                    return this.#stock.filter(item => item.name.toLowerCase() === searchName.toLowerCase());
+                }
+
+                filterByManufacturerName(searchManufacturer) {
+                    if (!searchManufacturer) 
+                        return this.#stock;
+                   return this.#stock.filter(item => item.manufacturer.name.toLowerCase() === searchManufacturer.toLowerCase());
+                }
+
+                printStockList(title, list = this.#stock) {
+                    document.write(`<h3>${title.toUpperCase()}</h3>`);
+                    if (list.length === 0) {
+                        document.write("<p>The warehouse is empty or no products matched the criteria.</p>");
+                        return;
+                    }
+                    document.write("<ul>");
+                    list.forEach(item => {
+                        document.write(`<li><b>${item.name}</b> | Qty: ${item.quantity} ${item.unit} | Manufacturer: "${item.manufacturer.name}" (Reg.№: ${item.manufacturer.regNumber})</li>`);
+                    });
+                    document.write("</ul>");
+                }
+            }
+
+            // TESTING THE CLASS
+            try {
+                document.write(`<h2>Testing ${Warehouse.name} Class</h2>`);
+
+                const myWarehouse = new Warehouse([
+                    { 
+                        name: "Monitor 27", 
+                        unit: "pcs", 
+                        quantity: 15, 
+                        manufacturer: { name: "Asus Tech", regNumber: "REG-10023" } 
+                    },
+                    { 
+                        name: "Laptop Pro", 
+                        unit: "pcs", 
+                        quantity: 8, 
+                        manufacturer: { name: "Asus Tech", regNumber: "REG-10023" } 
+                    },
+                    { 
+                        name: "Wireless Mouse", 
+                        unit: "pcs", 
+                        quantity: 50, 
+                        manufacturer: { name: "Logitech", regNumber: "REG-55411" } 
+                    }
+                ]);
+
+                myWarehouse.printStockList("Initial Warehouse Stock");
+                document.write("<hr>");
+
+                document.write("<h4>Executing Stock Operations...</h4>");
+                
+                myWarehouse.registerProduct({
+                    name: "RGB Keyboard",
+                    unit: "pcs",
+                    quantity: 20,
+                    manufacturer: { name: "Logitech", regNumber: "REG-55411" }
+                });
+
+                myWarehouse.registerProduct({
+                    name: "Laptop Pro",
+                    unit: "pcs",
+                    quantity: 5,
+                    manufacturer: { name: "Asus Tech", regNumber: "REG-10023" }
+                });
+
+                myWarehouse.shipProduct("Wireless Mouse", "Logitech", 15);
+                
+                document.write("<hr>");
+                myWarehouse.printStockList("Warehouse Stock After Operations");
+                document.write("<hr>");
+
+                const searchByName = myWarehouse.filterByProductName("laptop pro");
+                myWarehouse.printStockList("Filter Results for Product Name 'laptop pro'", searchByName);
+
+                const searchByFirm = myWarehouse.filterByManufacturerName("Logitech");
+                myWarehouse.printStockList("Filter Results for Manufacturer 'Logitech'", searchByFirm);
+
+                document.write("<hr>");
+                document.write("<p><i>Attempting to ship more items than available in stock...</i></p>");
+                myWarehouse.shipProduct("Laptop Pro", "Asus Tech", 100);
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

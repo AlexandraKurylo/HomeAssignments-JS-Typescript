@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task 2</title>
+    </head>
+    <body>
+        <h1>Задача 2</h1>
+        <p>Створити службове авто (водій, марка, номер). Створити клас таким
+            чином, щоб можна було створити тільки один екземпляр цього класу.
+        </p>
+
+        <script>
+            class CompanyCar {
+                static #instance = null;
+
+                #driver;
+                #brand;
+                #number;
+
+                constructor(driver, brand, number) {
+                    if (CompanyCar.#instance) {
+                        throw new Error("Error: You can only create one company car (Singleton)!");
+                    }
+
+                    if (!driver || !brand || !number) {
+                        throw new Error("All fields (driver, brand, number) are required!");
+                    }
+
+                    this.#driver = driver;
+                    this.#brand = brand;
+                    this.#number = number;
+
+                    CompanyCar.#instance = this;
+                }
+
+                static getInstance(driver, brand, number) {
+                    if (!CompanyCar.#instance) {
+                        CompanyCar.#instance = new CompanyCar(driver, brand, number);
+                    }
+                    return CompanyCar.#instance;
+                }
+
+                get Driver() {
+                    return this.#driver; 
+                }
+
+                set Driver(val) {
+                    if (!val || typeof val !== 'string') 
+                        throw new Error("Invalid driver name!");
+                    this.#driver = val;
+                }
+
+                get Brand() { 
+                    return this.#brand; 
+                }
+
+                set Brand(val) {
+                    if (!val || typeof val !== 'string') {
+                        throw new Error("Invalid car brand name!");
+                    }
+                    this.#brand = val;
+                }
+
+                get Number() { 
+                    return this.#number; 
+                } 
+
+                set Number(val) {
+                    if (!val) throw new Error("Car number cannot be empty!");
+                    this.#number = val;
+                }
+
+                toString() {
+                    return `Company Car: ${this.Brand} [${this.Number}], Driver: ${this.Driver}`;
+                }
+            }
+
+            // TESTING THE CLASS
+            try {
+                document.write(`<h2>Testing ${CompanyCar.name} (Singleton Pattern)</h2>`);
+
+                document.write("<p><b>Attempt 1: Creating the first car instance via getInstance</b></p>");
+                const car1 = CompanyCar.getInstance("Oleksiy Petrovych", "Toyota Camry", "BH 1111 OO");
+                document.write(`<p style='color: green;'>car1: <b>${car1}</b></p>`);
+                document.write("<hr>");
+
+                document.write("<p><b>Attempt 2: Trying to create another instance with different data via getInstance</b></p>");
+                const car2 = CompanyCar.getInstance("Ivan Ivanovych", "BMW X5", "AA 7777 AA");
+                document.write(`<p style='color: green;'>car2: <b>${car2}</b></p>`);
+                document.write("<hr>");
+
+                document.write("<p><b>Checking references equality (Are they the exact same object?):</b></p>");
+                document.write(`<p>car1 === car2: <span style='color: blue;'><b>${car1 === car2}</b></span></p>`);
+                document.write("<hr>");
+
+                document.write("<p><b>Modifying the driver via car2 variable and checking car1...</b></p>");
+                car2.Driver = "Stepan Vlasovych";
+                document.write(`<p>car1 after modification: <b>${car1}</b></p>`);
+                document.write("<hr>");
+
+                document.write("<p><i>Attempt 3: Trying to bypass protection using direct 'new' operator...</i></p>");
+                const car3 = new CompanyCar("Dmytro", "Audi", "AI 2222 AI");
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>

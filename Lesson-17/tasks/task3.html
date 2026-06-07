@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task 3</title>
+    </head>
+    <body>
+        <h1>Задача 3</h1>
+        <p> Створити клас Нагадувач. Кожні вказані кількості секунд (використати
+            setInterval) програма нагадує про якусь подію (це просто текст) і
+            також виводиться порядковий номер скільки раз вже нагадування було.
+            Зробити так, щоб неможна було зробити одночасно декілька
+            об’єктів-нагадувачів. Методи зупинки таймера, метод зміни
+            повідомлення без зупинки таймера.
+        </p>
+
+        <script>
+            class Reminder {
+                static #instance = null;
+
+                #message;
+                #intervalSeconds;
+                #timerId = null;
+                #counter = 0;
+
+                constructor(message, intervalSeconds) {
+                    if (Reminder.#instance) {
+                        throw new Error("Error: Reminder already exists! Use Reminder.getInstance()");
+                    }
+
+                    this.setMessageWithoutReset(message);
+                    this.IntervalSeconds = intervalSeconds;
+
+                    Reminder.#instance = this;
+                }
+
+                static getInstance(message, intervalSeconds) {
+                    if (!Reminder.#instance) {
+                        Reminder.#instance = new Reminder(message, intervalSeconds);
+                    }
+                    return Reminder.#instance;
+                }
+
+                get IntervalSeconds() { 
+                    return this.#intervalSeconds; 
+                }
+
+                set IntervalSeconds(val) {
+                    if (isNaN(val) || val <= 0) {
+                        throw new Error("Interval must be a positive number!");
+                    }
+                    this.#intervalSeconds = val;
+                }
+
+                start() {
+                    if (this.#timerId) this.stop();
+
+                    document.write(`<p>🔔 Reminder started: "${this.#message}" (every ${this.#intervalSeconds} sec)</p>`);
+
+                    this.#timerId = setInterval(() => {
+                        this.#counter++;
+                        document.write(`<p>[Notification #${this.#counter}]: ${this.#message}</p>`);
+                    }, this.#intervalSeconds * 1000);
+                }
+
+                stop() {
+                    if (this.#timerId) {
+                        clearInterval(this.#timerId);
+                        this.#timerId = null;
+                        document.write("<p>🛑 Reminder execution successfully stopped.</p>");
+                    }
+                }
+
+                setMessageWithoutReset(newMessage) {
+                    if (!newMessage || typeof newMessage !== 'string' || newMessage.trim() === '') {
+                        throw new Error("Message cannot be empty!");
+                    }
+                    this.#message = newMessage;
+                    document.write(`<p>✍️ Reminder message changed to: "${this.#message}"</p>`);
+                }
+
+                resetCounter() {
+                    this.#counter = 0;
+                    document.write("<p>🔄 Reminder counter reset to 0.</p>");
+                }
+
+                toString() {
+                    return `Reminder Status: [Message: "${this.#message}", Interval: ${this.#intervalSeconds}s, Total Sent: ${this.#counter}]`;
+                }
+            }
+
+            // TESTING THE CLASS
+            try {
+                document.write(`<h2>Testing ${Reminder.name} Class (Singleton & Timer)</h2>`);
+
+                const notifier = Reminder.getInstance("Time to stretch your eyes! 👀", 2);
+                notifier.start();
+
+                document.write(`<p><b>Initial toString():</b> ${notifier}</p>`);
+
+                const fakeNotifier = Reminder.getInstance("Different text", 5);
+                document.write(`<p>Are they the exact same object? <b>${notifier === fakeNotifier}</b></p>`);
+                document.write("<hr>");
+
+                setTimeout(() => {
+                    notifier.setMessageWithoutReset("Don't forget to drink some water! 💧");
+                    document.write(`<p><b>toString() after message change:</b> ${notifier}</p>`);
+                }, 5000);
+
+                setTimeout(() => {
+                    notifier.stop();
+                    document.write(`<p><b>Final toString() after stop:</b> ${notifier}</p>`);
+                    document.write("<hr>");
+                }, 11000);
+
+                setTimeout(() => {
+                    document.write("<p><i>Attempting to bypass protection using direct 'new' operator...</i></p>");
+                    const illegalReminder = new Reminder("Breaking the system", 1);
+                }, 13000);
+
+            } catch (error) {
+                document.write(`<p style='color: red;'><b>Caught Exception:</b> ${error.message}</p>`);
+            }
+        </script>
+    </body>
+</html>
