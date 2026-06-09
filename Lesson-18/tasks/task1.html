@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Task 1 - Calculator Simple Functions</title>
+        <style>
+            .calculator {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .calculator__container {
+                max-width: 1200px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .calculator__app {
+                background: #1e293b;
+                border: 4px solid #334155;
+                border-radius: 24px;
+                padding: 24px;
+                width: 100%;
+                max-width: 360px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .calculator__display {
+                background: #0f172a;
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 20px;
+                border: 1px solid #475569;
+                min-height: 110px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+            .calculator__history {
+                font-size: 16px;
+                color: #94a3b8;
+                text-align: right;
+                min-height: 24px;
+                word-wrap: break-word;
+            }
+
+            .calculator__output {
+                font-size: 36px;
+                font-weight: bold;
+                color: #38bdf8;
+                text-align: right;
+                min-height: 48px;
+                margin-top: 5px;
+                word-wrap: break-word;
+            }
+
+            .calculator__grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+
+            .calculator__btn {
+                background: #334155;
+                color: #f1f5f9;
+                border: none;
+                border-radius: 12px;
+                font-size: 22px;
+                font-weight: 600;
+                padding: 16px 0;
+                cursor: pointer;
+                transition: background-color 0.15s ease, transform 0.05s ease;
+                user-select: none;
+                box-shadow: 0 4px 0 #1e293b;
+            }
+
+            .calculator__btn:hover { background: #475569; }
+            .calculator__btn:active { transform: translateY(4px); box-shadow: none; }
+
+            .calculator__btn--operator { background: #1e3a8a; color: #38bdf8; box-shadow: 0 4px 0 #172554; }
+            .calculator__btn--operator:hover { background: #1e40af; }
+
+            .calculator__btn--clear { background: #991b1b; color: #fca5a5; box-shadow: 0 4px 0 #7f1d1d; }
+            .calculator__btn--clear:hover { background: #b91c1c; }
+
+            .calculator__btn--equal { background: #166534; color: #4ade80; box-shadow: 0 4px 0 #14532d; }
+            .calculator__btn--equal:hover { background: #15803d; }
+        </style>
+    </head>
+    <body>
+        <div class="calculator">
+            <div class="calculator__container">
+                <div class="calculator__app" data-prev data-op
+                    data-reset="false">
+                    <div class="calculator__display">
+                        <div class="calculator__history"></div>
+                        <div class="calculator__output">0</div>
+                    </div>
+                    <div class="calculator__grid">
+                        <button class="calculator__btn calculator__btn--clear"
+                            data-action="clear">C</button>
+                        <button
+                            class="calculator__btn calculator__btn--operator"
+                            data-action="backspace">⌫</button>
+                        <button
+                            class="calculator__btn calculator__btn--operator"
+                            data-operator="/">÷</button>
+                        <button
+                            class="calculator__btn calculator__btn--operator"
+                            data-operator="*">×</button>
+
+                        <button class="calculator__btn"
+                            data-number="7">7</button>
+                        <button class="calculator__btn"
+                            data-number="8">8</button>
+                        <button class="calculator__btn"
+                            data-number="9">9</button>
+                        <button
+                            class="calculator__btn calculator__btn--operator"
+                            data-operator="-">-</button>
+
+                        <button class="calculator__btn"
+                            data-number="4">4</button>
+                        <button class="calculator__btn"
+                            data-number="5">5</button>
+                        <button class="calculator__btn"
+                            data-number="6">6</button>
+                        <button class="calculator__btn"
+                            data-operator="+">+</button>
+
+                        <button class="calculator__btn"
+                            data-number="1">1</button>
+                        <button class="calculator__btn"
+                            data-number="2">2</button>
+                        <button class="calculator__btn"
+                            data-number="3">3</button>
+                        <button class="calculator__btn calculator__btn--equal"
+                            data-action="calculate">=</button>
+
+                        <button class="calculator__btn"
+                            data-number="0">0</button>
+                        <button class="calculator__btn"
+                            data-action="toggle-sign">+/-</button>
+                        <button class="calculator__btn"
+                            data-number=".">.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 1. Отримання поточного значення з екрана
+            function getOutputValue(outputHTML) {
+                if (outputHTML) {
+                    return outputHTML.innerText;
+                } else {
+                    return '0';
+                }
+            }
+
+            // 2. Виведення результатів на екран
+            function updateDisplayValues(outputHTML, historyHTML, mainValue, historyValue) {
+                if (outputHTML && mainValue !== null) {
+                    outputHTML.innerText = mainValue;
+                }
+                if (historyHTML && historyValue !== null) {
+                    historyHTML.innerText = historyValue;
+                }
+            }
+
+            // 3. Додавання цифри або крапки
+            function pressDigit(digit, container, outputHTML) {
+                if (container && outputHTML) {
+                    let current = getOutputValue(outputHTML);
+                    if (container.dataset.reset === "true") {
+                        current = "";
+                        container.dataset.reset = "false";
+                    }
+                    if (digit === '.' && current.includes('.')) {
+                        return;
+                    }
+                    if (current === '0' && digit !== '.') {
+                        current = digit;
+                    } else {
+                        current += digit;
+                    }
+                    updateDisplayValues(outputHTML, null, current, null);
+                } else {
+                    return;
+                }
+            }
+
+            // 4. Вибір математичної операції (+, -, *, /)
+            function setMathOperation(operator, container, outputHTML, historyHTML) {
+                if (container && outputHTML && historyHTML) {
+                    if (container.dataset.op && container.dataset.reset === "false") {
+                        executeCalculation(container, outputHTML, historyHTML);
+                    }
+                    container.dataset.prev = getOutputValue(outputHTML);
+                    container.dataset.op = operator;
+                    container.dataset.reset = "true";
+                    const displayOp = operator === '*' ? '×' : operator === '/' ? '÷' : operator;
+                    updateDisplayValues(outputHTML, historyHTML, getOutputValue(outputHTML), `${container.dataset.prev} ${displayOp}`);
+                } else {
+                    return;
+                }
+            }
+
+            // 5. Проведення математичного розрахунку
+            function executeCalculation(container, outputHTML, historyHTML) {
+                if (container && outputHTML && historyHTML) {
+                    const prev = parseFloat(container.dataset.prev);
+                    const current = parseFloat(getOutputValue(outputHTML));
+                    const op = container.dataset.op;
+                    if (!isNaN(prev) && !isNaN(current) && op) {
+                        let result;
+                        if (op === '+') result = prev + current;
+                        if (op === '-') result = prev - current;
+                        if (op === '*') result = prev * current;
+                        if (op === '/') result = current === 0 ? 'Помилка' : prev / current;
+                        const finalResult = typeof result === 'number' ? parseFloat(result.toFixed(10)).toString() : result;
+                        container.dataset.prev = "";
+                        container.dataset.op = "";
+                        container.dataset.reset = "true";
+                        updateDisplayValues(outputHTML, historyHTML, finalResult, "");
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            // 6. Повне очищення (кнопка C)
+            function clearCalculator(container, outputHTML, historyHTML) {
+                if (container && outputHTML && historyHTML) {
+                    container.dataset.prev = "";
+                    container.dataset.op = "";
+                    container.dataset.reset = "false";
+                    updateDisplayValues(outputHTML, historyHTML, "0", "");
+                } else {
+                    return;
+                }
+            }
+
+            // 7. Видалення останнього символу (кнопка ⌫)
+            function deleteLastSymbol(outputHTML) {
+                if (outputHTML) {
+                    let current = getOutputValue(outputHTML);
+                    if (current.length > 1) {
+                        current = current.slice(0, -1);
+                    } else {
+                        current = "0";
+                    }
+                    updateDisplayValues(outputHTML, null, current, null);
+                } else {
+                    return;
+                }
+            }
+
+            // 7. Зміна знаку числа (+/-)
+            function toggleSign(outputHTML) {
+                if (outputHTML) {
+                    let current = getOutputValue(outputHTML);
+                    if (current !== '0' && current !== 'Помилка') {
+                        if (current.startsWith('-')) {
+                            current = current.slice(1);
+                        } else {
+                            current = '-' + current;
+                        }
+                        updateDisplayValues(outputHTML, null, current, null);
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            window.onload = function() {
+                const appContainer = document.querySelector('.calculator__app');
+                const outputScreen = document.querySelector('.calculator__output');
+                const historyScreen = document.querySelector('.calculator__history');
+                const grid = document.querySelector('.calculator__grid');
+
+                if (grid && appContainer && outputScreen && historyScreen) {
+                    grid.addEventListener('click', function(e) {
+                        const button = e.target;
+                        if (button.classList.contains('calculator__btn')) {
+                            if (button.dataset.number !== undefined) {
+                                pressDigit(button.dataset.number, appContainer, outputScreen);
+                            } 
+                            else if (button.dataset.operator !== undefined) {
+                                setMathOperation(button.dataset.operator, appContainer, outputScreen, historyScreen);
+                            } 
+                            else if (button.dataset.action !== undefined) {
+                                const action = button.dataset.action;
+                                if (action === 'clear') {
+                                    clearCalculator(appContainer, outputScreen, historyScreen);
+                                }
+                                if (action === 'backspace') {
+                                    deleteLastSymbol(outputScreen);
+                                }
+                                if (action === 'calculate') {
+                                    executeCalculation(appContainer, outputScreen, historyScreen);
+                                }
+                                if (action === 'toggle-sign') {
+                                    toggleSign(outputScreen);
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    });
+                } else {
+                    return;
+                }
+            };
+        </script>
+    </body>
+</html>

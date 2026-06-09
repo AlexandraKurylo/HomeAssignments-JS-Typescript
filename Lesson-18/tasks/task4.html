@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>task 7 - Cost of travel</title>
+        <style>
+            .travel-app {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .travel-app__container {
+                min-height: 100vh;
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .travel-app__card {
+                background: #1e293b;
+                border: 4px solid #334155;
+                border-radius: 24px;
+                padding: 30px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .travel-app__title {
+                font-size: 24px;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 24px;
+                color: #38bdf8;
+            }
+
+            .stage-card {
+                background: #0f172a;
+                border: 1px solid #334155;
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .stage-card__title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #38bdf8;
+                margin-bottom: 14px;
+                border-bottom: 1px solid #334155;
+                padding-bottom: 6px;
+            }
+
+            .stage-card__group {
+                margin-bottom: 14px;
+            }
+
+            .stage-card__label {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 6px;
+                color: #94a3b8;
+            }
+
+            .stage-card__select {
+                width: 100%;
+                background: #1e293b;
+                border: 1px solid #475569;
+                border-radius: 8px;
+                padding: 10px 12px;
+                font-size: 16px;
+                color: #f1f5f9;
+                outline: none;
+                cursor: pointer;
+            }
+
+            .stage-card__checkbox-group, .stage-card__radio-group {
+                display: flex;
+                flex-direction: column; 
+                gap: 10px;              
+                background: #1e293b;
+                padding: 14px 16px;     
+                border-radius: 12px;    
+                border: 1px solid #475569;
+            }
+
+            .stage-card__option-label {
+                display: flex;
+                align-items: center;
+                gap: 12px;              
+                font-size: 15px;
+                cursor: pointer;
+                user-select: none;
+                padding: 8px 10px;      
+                border-radius: 8px;
+                transition: background-color 0.2s ease; 
+            }
+
+            .stage-card__option-label:hover {
+                background: #273549; 
+            }
+
+            .stage-card__option-label input {
+                cursor: pointer;
+                accent-color: #38bdf8;
+                width: 18px;            
+                height: 18px;           
+                margin: 0;
+            }
+
+            .travel-app__btn {
+                width: 100%;
+                background: #166534;
+                color: #4ade80;
+                border: none;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: 700;
+                padding: 16px;
+                cursor: pointer;
+                box-shadow: 0 4px 0 #14532d;
+                transition: background-color 0.15s, transform 0.05s, box-shadow 0.05s;
+                user-select: none;
+            }
+
+            .travel-app__btn:hover {
+                background: #15803d;
+            }
+
+            .travel-app__btn:active {
+                transform: translateY(4px);
+                box-shadow: none;
+            }
+
+            .travel-app__result-box {
+                background: #0f172a;
+                border: 1px solid #334155;
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+                font-size: 22px;
+                font-weight: 700;
+                color: #38bdf8;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="travel-app">
+            <div class="travel-app__container">
+                <div class="travel-app__card">
+                    <h2 class="travel-app__title">Калькулятор подорожі (3
+                        Етапи)</h2>
+                    <div class="travel-app__stages-container"></div>
+                    <button
+                        class="travel-app__btn travel-app__btn--calc">Розрахувати
+                        загальну вартість</button>
+                    <div class="travel-app__result-box">Загальна вартість: 0
+                        грн</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+           // 1. Прайс послуг 
+            const PRICES = {
+                transport: { "none": 0, "car": 500, "bus": 300, "plane": 2500 },
+                food: { "breakfast": 150, "lunch": 250, "dinner": 200 },
+                guide: { "guide_1": 400, "guide_2": 600, "guide_3": 800 }
+            };
+
+            // 2. Створення карток етапів
+            function renderStages(container) {
+                if (container) {
+                    container.innerHTML = "";
+
+                    for (let stageNum = 1; stageNum <= 3; stageNum++) {
+                        const card = document.createElement('div');
+                        card.classList.add('stage-card');
+
+                        const title = document.createElement('h3');
+                        title.classList.add('stage-card__title');
+                        title.textContent = `Етап №${stageNum}`;
+                        card.append(title);
+
+                        // Транспорт (Select) 
+                        const transGroup = document.createElement('div');
+                        transGroup.classList.add('stage-card__group');
+                        
+                        const transLabel = document.createElement('label');
+                        transLabel.classList.add('stage-card__label');
+                        transLabel.textContent = "Виберіть транспорт:";
+                        
+                        const select = document.createElement('select');
+                        select.classList.add('stage-card__select', 'stage-card__select--transport');
+                        
+                        const optionNone = document.createElement('option'); 
+                        optionNone.value = "none"; 
+                        optionNone.textContent = "Не обрано (0 грн)";
+                        
+                        const optionCar = document.createElement('option'); 
+                        optionCar.value = "car"; 
+                        optionCar.textContent = `Авто (${PRICES.transport.car} грн)`;
+                        
+                        const optionBus = document.createElement('option'); 
+                        optionBus.value = "bus"; 
+                        optionBus.textContent = `Автобус (${PRICES.transport.bus} грн)`;
+                        
+                        const optionPlane = document.createElement('option'); 
+                        optionPlane.value = "plane"; 
+                        optionPlane.textContent = `Літак (${PRICES.transport.plane} грн)`;
+                        
+                        select.append(optionNone, optionCar, optionBus, optionPlane);
+                        transGroup.append(transLabel, select);
+                        card.append(transGroup);
+
+                        // Харчування (Checkbox)
+                        const foodGroup = document.createElement('div');
+                        foodGroup.classList.add('stage-card__group');
+                        
+                        const foodLabel = document.createElement('label');
+                        foodLabel.classList.add('stage-card__label');
+                        foodLabel.textContent = "Харчування (можна декілька):";
+                        
+                        const checkboxContainer = document.createElement('div');
+                        checkboxContainer.classList.add('stage-card__checkbox-group');
+
+                        const meals = [
+                            { variant: 'breakfast', description: `Сніданок (${PRICES.food.breakfast} грн)` },
+                            { variant: 'lunch', description: `Обід (${PRICES.food.lunch} грн)` },
+                            { variant: 'dinner', description: `Вечеря (${PRICES.food.dinner} грн)` }
+                        ];
+
+                        meals.forEach(meal => {
+                            const label = document.createElement('label');
+                            label.classList.add('stage-card__option-label');
+                            
+                            const mealCheckbox = document.createElement('input');
+                            mealCheckbox.type = 'checkbox';
+                            mealCheckbox.value = meal.variant;
+                            mealCheckbox.classList.add('stage-card__checkbox-food');
+                            
+                            label.append(mealCheckbox, meal.description);
+                            checkboxContainer.append(label);
+                        });
+                        
+                        foodGroup.append(foodLabel, checkboxContainer);
+                        card.append(foodGroup);
+
+                        // Гіди (Radio buttons) 
+                        const guideGroup = document.createElement('div');
+                        guideGroup.classList.add('stage-card__group');
+                        
+                        const guideLabel = document.createElement('label');
+                        guideLabel.classList.add('stage-card__label');
+                        guideLabel.textContent = "Оберіть гіда (один на етап):";
+                        
+                        const radioContainer = document.createElement('div');
+                        radioContainer.classList.add('stage-card__radio-group');
+
+                        const guides = [
+                            { variant: 'guide_1', description: `Гід Олег (${PRICES.guide.guide_1} грн)` },
+                            { variant: 'guide_2', description: `Гід Ірина (${PRICES.guide.guide_2} грн)` },
+                            { variant: 'guide_3', description: `Гід Максим (${PRICES.guide.guide_3} грн)` }
+                        ];
+
+                        guides.forEach(guide => {
+                            const label = document.createElement('label');
+                            label.classList.add('stage-card__option-label');
+                            
+                            const guideRadioButton = document.createElement('input');
+                            guideRadioButton.type = 'radio';
+                            guideRadioButton.name = `guide_stage_${stageNum}`; 
+                            guideRadioButton.value = guide.variant;
+                            guideRadioButton.classList.add('stage-card__radio-guide');
+                            
+                            label.append(guideRadioButton, guide.description);
+                            radioContainer.append(label);
+                        });
+
+                        guideGroup.append(guideLabel, radioContainer);
+                        card.append(guideGroup);
+                        container.append(card);
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            // 3. Підрахунок загальної вартості
+            function calculateTotalPrice(container, resultBox) {
+                if (container && resultBox) {
+                    let total = 0;
+                    const cards = container.querySelectorAll('.stage-card');
+
+                    cards.forEach(card => {
+                        const transportSelect = card.querySelector('.stage-card__select--transport');
+                        if (transportSelect) {
+                            total += PRICES.transport[transportSelect.value] || 0;
+                        }
+
+                        const checkedFoods = card.querySelectorAll('.stage-card__checkbox-food:checked');
+                        checkedFoods.forEach(mealCheckbox => {
+                            total += PRICES.food[mealCheckbox.value] || 0;
+                        });
+
+                        const checkedGuide = card.querySelector('.stage-card__radio-guide:checked');
+                        if (checkedGuide) {
+                            total += PRICES.guide[checkedGuide.value] || 0;
+                        }
+                    });
+                    resultBox.textContent = `Загальна вартість: ${total} грн`;
+                } else {
+                    return;
+                }
+            }
+
+            window.onload = function() {
+                const stagesContainer = document.querySelector('.travel-app__stages-container');
+                const resultBox = document.querySelector('.travel-app__result-box');
+
+                if (stagesContainer && resultBox) {
+                    renderStages(stagesContainer);
+                    
+                    window.addEventListener('click', function(e) {
+                        const targetBtn = e.target;
+
+                        if (targetBtn.classList.contains('travel-app__btn--calc')) {
+                            calculateTotalPrice(stagesContainer, resultBox);
+                        } else {
+                            return;
+                        }
+                    });
+                } else {
+                    return;
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Task 6 - Grades Calculator</title>
+        <style>
+            .manager {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .manager__container {
+                max-width: 1200px;
+                margin: 0 auto;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .manager__app {
+                background: #1e293b;
+                border: 4px solid #334155;
+                border-radius: 24px;
+                padding: 30px;
+                width: 100%;
+                max-width: 460px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .manager__title {
+                font-size: 22px;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 24px;
+                color: #38bdf8;
+            }
+
+            .manager__group {
+                margin-bottom: 20px;
+            }
+
+            .manager__label {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: #94a3b8;
+            }
+
+            .manager__input {
+                width: 100%;
+                background: #0f172a;
+                border: 1px solid #475569;
+                border-radius: 12px;
+                padding: 14px 16px;
+                font-size: 18px;
+                font-weight: 600;
+                color: #f1f5f9;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .manager__input:focus {
+                border-color: #38bdf8;
+            }
+
+            .manager__input::-webkit-outer-spin-button,
+            .manager__input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .manager__btn {
+                width: 100%;
+                background: #1e3a8a;
+                color: #38bdf8;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 700;
+                padding: 14px;
+                cursor: pointer;
+                box-shadow: 0 4px 0 #1e40af;
+                transition: background-color 0.15s, transform 0.05s, box-shadow 0.05s;
+                margin-top: 8px;
+                user-select: none;
+            }
+
+            .manager__btn:hover {
+                background: #2563eb;
+            }
+
+            .manager__btn:active {
+                transform: translateY(4px);
+                box-shadow: none;
+            }
+
+            .manager__btn--calc {
+                background: #166534;
+                color: #4ade80;
+                box-shadow: 0 4px 0 #14532d;
+            }
+
+            .manager__btn--calc:hover {
+                background: #15803d;
+            }
+
+            .manager__divider {
+                border: 0;
+                height: 1px;
+                background: #334155;
+                margin: 24px 0;
+            }
+
+            .manager__table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            .manager__table th {
+                text-align: left;
+                padding: 10px;
+                color: #94a3b8;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .manager__table td {
+                padding: 6px 0;
+            }
+
+            .manager__table-input {
+                padding: 10px 14px;
+                font-size: 16px;
+            }
+
+            .manager__result-box {
+                background: #0f172a;
+                border: 1px solid #334155;
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+                font-size: 20px;
+                font-weight: 700;
+                color: #4ade80;
+                margin-top: 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="manager">
+            <div class="manager__container">
+                <div class="manager__app">
+                    <h2 class="manager__title">Розрахунок середнього балу</h2>
+                    <div class="manager__group">
+                        <label class="manager__label">Кількість оцінок:</label>
+                        <input type="number"
+                            class="manager__input manager__input--count"
+                            value="1"
+                            min="1">
+                    </div>
+                    <button class="manager__btn manager__btn--generate">Get
+                        table</button>
+                    <div class="manager__table-container"></div>
+                    <div class="manager__actions-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 1. Генерація таблиці
+            function generateTable(inputCount, tableContainer, actionsContainer) {
+                if (inputCount && tableContainer && actionsContainer) {
+                    const count = parseInt(inputCount.value);
+
+                    tableContainer.innerHTML = "";
+                    actionsContainer.innerHTML = "";
+
+                    if (!isNaN(count) && count > 0) {
+                        const table = document.createElement('table');
+                        table.classList.add('manager__table');
+
+                        const thead = document.createElement('thead');
+                        const headerRow = document.createElement('tr');
+                        const thNum = document.createElement('th');
+                        thNum.textContent = '№';
+                        const thGrade = document.createElement('th');
+                        thGrade.textContent = 'Оцінка';
+                        
+                        headerRow.append(thNum, thGrade);
+                        thead.append(headerRow);
+                        table.append(thead);
+
+                        const tbody = document.createElement('tbody');
+
+                        for (let i = 1; i <= count; i++) {
+                            const row = document.createElement('tr');
+
+                            const tdNum = document.createElement('td');
+                            tdNum.style.width = '50px';
+                            tdNum.style.paddingLeft = '10px';
+                            tdNum.style.fontWeight = '600';
+                            tdNum.style.color = '#64748b';
+                            tdNum.textContent = i;
+
+                            const tdInput = document.createElement('td');
+                            const input = document.createElement('input');
+                            input.type = 'number';
+                            input.classList.add('manager__input', 'manager__table-input');
+                            input.placeholder = 'Введіть бал';
+                            input.min = '0';
+
+                            tdInput.append(input);
+                            row.append(tdNum, tdInput);
+                            tbody.append(row);
+                        }
+
+                        table.append(tbody);
+                        tableContainer.append(table);
+
+                        const divider = document.createElement('hr');
+                        divider.classList.add('manager__divider');
+
+                        const calcBtn = document.createElement('button');
+                        calcBtn.classList.add('manager__btn', 'manager__btn--calc');
+                        calcBtn.textContent = 'Get average';
+
+                        const resultBox = document.createElement('div');
+                        resultBox.classList.add('manager__result-box');
+                        resultBox.textContent = 'Середній бал: 0';
+
+                        actionsContainer.append(divider, calcBtn, resultBox);
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            // 2. Розрахунок середнього значення оцінок
+            function calculateAverage(tableContainer, actionsContainer) {
+                if (tableContainer && actionsContainer) {
+                    const gradeInputs = tableContainer.querySelectorAll('.manager__table-input');
+                    const resultBox = actionsContainer.querySelector('.manager__result-box');
+
+                    if (gradeInputs.length > 0 && resultBox) {
+                        let sum = 0;
+                        let allFieldsFilled = true;
+
+                        for (let i = 0; i < gradeInputs.length; i++) {
+                            const val = parseFloat(gradeInputs[i].value);
+                            
+                            if (gradeInputs[i].value.trim() === "" || isNaN(val)) {
+                                allFieldsFilled = false;
+                                break;
+                            }
+                            
+                            sum += val;
+                        }
+
+                        if (allFieldsFilled) {
+                            const average = sum / gradeInputs.length;
+                            resultBox.textContent = `Середній бал: ${parseFloat(average.toFixed(2))}`;
+                        } else {
+                            resultBox.textContent = "Ви ввели не всі оцінки!";
+                        }
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            window.onload = function() {
+                const inputCount = document.querySelector('.manager__input--count');
+                const tableContainer = document.querySelector('.manager__table-container');
+                const actionsContainer = document.querySelector('.manager__actions-container');
+
+                if (inputCount && tableContainer && actionsContainer) {
+                    window.addEventListener('click', function(e) {
+                        const targetBtn = e.target;
+                        
+                        if (targetBtn.classList.contains('manager__btn--generate')) {
+                            generateTable(inputCount, tableContainer, actionsContainer);
+                        } 
+                        else if (targetBtn.classList.contains('manager__btn--calc')) {
+                            calculateAverage(tableContainer, actionsContainer);
+                        } 
+                        else {
+                            return;
+                        }
+                    });
+                } else {
+                    return;
+                }
+            };
+        </script>
+    </body>
+</html>
