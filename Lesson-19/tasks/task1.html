@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 1</title>
+        <style>
+
+        .task-card {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f1f5f9;
+        }
+
+        .task-card__container {
+            max-width: 1240px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .task-card__main {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 24px;
+            padding: 35px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+        }
+
+        .task-card__title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .task-card__description {
+            font-size: 14px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .hello-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .hello-box__item {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hello-box__item:hover {
+            transform: scale(1.02);
+            border-color: #475569;
+            background: #131e35;
+        }
+
+        .hello-box__item--highlighted {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;               
+            color: #fca5a5;                     
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); 
+        }
+
+        .hello-box__item--highlighted:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+    </style>
+    </head>
+    <body>
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 1</h2>
+                    <p class="task-card__description"> Дано 10 рядків тексту
+                        «Hello!»
+                        у
+                        окремих div. При кліку на якийсь із них усі наступні
+                        повинні
+                        бути зафарбовані у червоний колір.
+                    </p>
+                    <div class="task-card__box hello-box">
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                        <div class="hello-box__item">Hello!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        window.onload = function() {
+            const helloBox = document.querySelector('.hello-box');
+
+            if (helloBox) {
+                helloBox.addEventListener('click', function(e) {
+                    const clickedItem = e.target;
+
+                    if (clickedItem.classList.contains('hello-box__item')) {
+                        const allItems = helloBox.querySelectorAll('.hello-box__item');
+                        allItems.forEach(item => {
+                            item.classList.remove('hello-box__item--highlighted');
+                        });
+
+                        let nextItem = clickedItem.nextElementSibling;
+
+                        while (nextItem) {
+                            nextItem.classList.add('hello-box__item--highlighted');
+                            nextItem = nextItem.nextElementSibling;
+                        }
+                    }
+                });
+            }
+        };
+    </script>
+    </body>
+</html>

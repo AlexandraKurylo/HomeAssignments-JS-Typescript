@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="./css/reset.css">
+        <title>Lesson-19</title>
+        <style>
+
+        .page-body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .homework-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+
+        .main-title {
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 800;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .tasks-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .task-card {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tasks-list__item:nth-child(1) .task-card { animation-delay: 0.1s; }
+        .tasks-list__item:nth-child(2) .task-card { animation-delay: 0.2s; }
+        .tasks-list__item:nth-child(3) .task-card { animation-delay: 0.3s; }
+        .tasks-list__item:nth-child(4) .task-card { animation-delay: 0.4s; }
+        .tasks-list__item:nth-child(5) .task-card { animation-delay: 0.5s; }
+
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #38bdf8, #818cf8);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-4px);
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .task-card:hover::before {
+            opacity: 1;
+        }
+
+        .task-card__title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .task-card:hover .task-card__title {
+            color: #60a5fa;
+        }
+
+        .task-card__paragraph {
+            color: #94a3b8;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .task-card__text p:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .task-card__code {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .task-card__picture {
+            display: block;
+            margin-top: 18px;         
+            width: 50%;              
+            border-radius: 12px;      
+            overflow: hidden;         
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(15, 23, 42, 0.4); 
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.3s ease;
+        }
+
+
+        .task-card__image {
+            display: block;
+            width: 100%;              
+            height: auto;             
+            max-height: 250px;        
+            object-fit: cover;        
+            object-position: top center; 
+            filter: brightness(0.9);   
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-body { padding: 20px 10px; }
+            .main-title { font-size: 32px; }
+            .task-card { padding: 20px; }
+        }
+    </style>
+    </head>
+
+    <body class="page-body">
+        <div class="homework-container">
+            <h1 class="main-title">Домашнє завдання №18</h1>
+
+            <ul class="tasks-list">
+                <li class="tasks-list__item">
+                    <a href="./tasks/task1.html" class="task-card">
+                        <h2 class="task-card__title">Задача 1.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Дано 10 рядків
+                                тексту «Hello!» у окремих div. При кліку на
+                                якийсь із них усі наступні повинні бути
+                                зафарбовані у червоний колір.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task2.html" class="task-card">
+                        <h2 class="task-card__title">Задача 2.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Дано 5 елементів
+                                input. При введенні значення у якийсь із них
+                                необхідно автоматично заповнювати інші (усі
+                                попередні у спадному порядку(кожен попередній
+                                має значення на 1 менше за наступний), усі
+                                наступні на 1 більше (кожен наступне на 1 більше
+                                за попереднього)
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task2.png" alt="task2">
+                        </picture>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task3.html" class="task-card">
+                        <h2 class="task-card__title">Задача 3.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Дано 5 випадковим
+                                чином згенерованих нумерованих списків з
+                                рандомними числами (кількість елементів у списку
+                                випадкова від 1 до 10, елементи випадкові – від
+                                1 до 100). При натисненні на кнопку нумеровані
+                                списки з парною кількістю елементів зафарбувати
+                                у зелений колір, інші у червоний.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task4.html" class="task-card">
+                        <h2 class="task-card__title">Задача 4.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Дано 3 таблиці
+                                розмірності 3*3 з випадковими числами. Якщо
+                                відбувається клік на якійсь із клітинок, то до
+                                відповідної таблиці додається червона рамка
+                                (спробуйте додати можливість відображення
+                                кількості кліків біля назви таблиці з
+                                використанням відповідно доданого для цього
+                                атрибута).
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task5.html" class="task-card">
+                        <h2 class="task-card__title">Задача 5.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Відображаємо картки
+                                товарів, які користувач може вибирати. Вибраний
+                                товар має зелену рамку (при кліку робити toogle
+                                з класом вибраного елемента)
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task5.png" alt="task5">
+                        </picture>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task6.html" class="task-card">
+                        <h2 class="task-card__title">Задача 6.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Дано список
+                                спортсменів. Потрібно сформувати список тих, які
+                                будуть брати участь у змаганні. При цьому є два
+                                стовпці. В одному відображені всі спортсмени, в
+                                іншому – список тих, хто був вибраний. При
+                                натисканні на зелену стрілку спортсмен
+                                переміщається у список для змагань. При
+                                натисканні на червону стрілку спортсмен
+                                переміщається у загальний список.
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task6.png" alt="task6">
+                        </picture>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task7.html" class="task-card">
+                        <h2 class="task-card__title">Задача 7.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Відобразити
+                                падаючий сніг. Сніжинка з’являється у верхній
+                                частині екрану (top =0) і з випадковою швидкістю
+                                рухається вниз (у setInterval викликати метод, у
+                                якому додавати крок до top). Як тільки сніжинка
+                                досягає нижньої частини екрану (top > maxTop)
+                                вона
+                                знову повинна з’явитись у верхній частині екрану
+                                (top=0).
+
+                            </p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

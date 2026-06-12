@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 6 - Списки спортсменів</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .task-card__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 800px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 30px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .sports-manager {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 25px;
+            }
+
+            .sports-manager__subtitle {
+                font-size: 16px;
+                font-weight: 700;
+                color: #cbd5e1;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .athletes-list {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 16px;
+                padding: 15px;
+                min-height: 250px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .selected-list {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 16px;
+                padding: 15px;
+                min-height: 250px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .athlete-card {
+                background: #1e293b;
+                border: 1px solid #475569;
+                border-radius: 10px;
+                padding: 12px 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: background-color 0.2s ease;
+            }
+
+            .athlete-card:hover {
+                background: #334155;
+            }
+
+            .athlete-card__name {
+                font-size: 15px;
+                font-weight: 600;
+                color: #f1f5f9;
+            }
+
+            .arrow-action {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1;
+                padding: 4px 8px;
+                border-radius: 6px;
+                transition: background-color 0.2s ease, transform 0.1s ease;
+            }
+
+            .arrow-action:active {
+                transform: scale(0.9);
+            }
+
+            .arrow-action--to-selected {
+                color: #22c55e; 
+            }
+            .arrow-action--to-selected:hover {
+                background: rgba(34, 197, 94, 0.15);
+            }
+
+            .arrow-action--to-general {
+                color: #ef4444; 
+            }
+            .arrow-action--to-general:hover {
+                background: rgba(239, 68, 68, 0.15);
+            }
+    </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 6</h2>
+                    <p class="task-card__description">Натисніть на зелену
+                        стрілочку,
+                        щоб
+                        додати спортсмена до змагань, або на червону, щоб
+                        повернути
+                        його
+                        назад.</p>
+                    <div class="task-card__error-message" id="errorBlock"></div>
+                    <div class="task-card__sports-manager sports-manager"
+                        id="managerContainer">
+                        <div class="sports-manager__column">
+                            <h3 class="sports-manager__subtitle">Загальний
+                                список</h3>
+                            <div class="athletes-list" id="generalList">
+                                <div class="athlete-card">
+                                    <span class="athlete-card__name">John
+                                        Depp</span>
+                                    <button
+                                        class="arrow-action arrow-action--to-selected">➡</button>
+                                </div>
+                                <div class="athlete-card">
+                                    <span class="athlete-card__name">Sara
+                                        Wik</span>
+                                    <button
+                                        class="arrow-action arrow-action--to-selected">➡</button>
+                                </div>
+                                <div class="athlete-card">
+                                    <span class="athlete-card__name">Den
+                                        Miro</span>
+                                    <button
+                                        class="arrow-action arrow-action--to-selected">➡</button>
+                                </div>
+                                <div class="athlete-card">
+                                    <span class="athlete-card__name">Alan
+                                        Woo</span>
+                                    <button
+                                        class="arrow-action arrow-action--to-selected">➡</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sports-manager__column">
+                            <h3 class="sports-manager__subtitle">Обрані для
+                                змагань</h3>
+                            <div class="selected-list" id="competitionList">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        function handleMoveAthlete(e, generalContainer, competitionContainer) {
+            const clickedBtn = e.target;
+
+            if (clickedBtn.classList.contains('arrow-action')) {
+                const athleteCard = clickedBtn.closest('.athlete-card');
+
+                if (athleteCard) {
+                    if (clickedBtn.classList.contains('arrow-action--to-selected')) {
+                        clickedBtn.classList.remove('arrow-action--to-selected');
+                        clickedBtn.classList.add('arrow-action--to-general');
+                        clickedBtn.innerText = '⬅';
+                        competitionContainer.appendChild(athleteCard);
+
+                    } else if (clickedBtn.classList.contains('arrow-action--to-general')) {
+                        clickedBtn.classList.remove('arrow-action--to-general');
+                        clickedBtn.classList.add('arrow-action--to-selected');
+                        clickedBtn.innerText = '➡';
+                        generalContainer.appendChild(athleteCard);
+                    }
+                } else {
+                    throw new Error("Кнопка переміщення знаходиться поза карткою спортсмена.");
+                }
+            }
+        }
+
+        window.onload = function() {
+            const managerContainer = document.getElementById('managerContainer');
+            const generalList = document.getElementById('generalList');
+            const competitionList = document.getElementById('competitionList');
+            const errorBlock = document.getElementById('errorBlock');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Елемент #errorBlock відсутній у розмітці.");
+                }
+
+                if (managerContainer && generalList && competitionList) {
+                    managerContainer.addEventListener('click', function(e) {
+                        try {
+                            handleMoveAthlete(e, generalList, competitionList);
+                        } catch (clickError) {
+                            if (errorBlock) {
+                                errorBlock.innerText = clickError.message;
+                                errorBlock.style.display = 'block';
+                            } else {
+                                throw clickError;
+                            }
+                        }
+                    });
+                } else {
+                    throw new Error("Не вдалося знайти один або кілька списків спортсменів у DOM.");
+                }
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

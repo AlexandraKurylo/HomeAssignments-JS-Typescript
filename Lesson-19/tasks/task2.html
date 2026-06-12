@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 2 - Числовий ланцюжок</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .task-card__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 500px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 25px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                display: none; 
+                text-align: center;
+            }
+
+            .task-card__inputs-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .input-group {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                background: #0f172a;
+                padding: 10px 16px;
+                border-radius: 12px;
+                border: 1px solid #334155;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .input-group:focus-within {
+                border-color: #38bdf8;
+                box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+            }
+
+            .input-group--error {
+                border-color: #ef4444;
+                box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+            }
+
+            .input-group__label {
+                font-size: 15px;
+                font-weight: 600;
+                color: #94a3b8;
+                min-width: 80px;
+            }
+
+            .input-group__field {
+                flex: 1;
+                background: transparent;
+                border: none;
+                outline: none;
+                color: #f1f5f9;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                padding: 6px 0;
+            }
+
+            .input-group__field::-webkit-inner-spin-button,
+            .input-group__field::-webkit-outer-spin-button {
+                filter: invert(1);
+                opacity: 0.5;
+            }
+    </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 2</h2>
+                    <p class="task-card__description">Дано 5 елементів input.
+                        При
+                        введенні значення у якийсь із них необхідно автоматично
+                        заповнювати інші (усі попередні у спадному порядку(кожен
+                        попередній має значення на 1 менше за наступний), усі
+                        наступні
+                        на 1 більше (кожен наступне на 1 більше за
+                        попереднього))
+                    </p>
+                    <div class="task-card__error-message" id="errorBlock"></div>
+                    <div class="task-card__inputs-list">
+                        <div class="input-group">
+                            <span class="input-group__label">Value 1</span>
+                            <input type="number" class="input-group__field"
+                                placeholder="Введіть число...">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group__label">Value 2</span>
+                            <input type="number" class="input-group__field"
+                                placeholder="Введіть число...">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group__label">Value 3</span>
+                            <input type="number" class="input-group__field"
+                                placeholder="Введіть число...">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group__label">Value 4</span>
+                            <input type="number" class="input-group__field"
+                                placeholder="Введіть число...">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group__label">Value 5</span>
+                            <input type="number" class="input-group__field"
+                                placeholder="Введіть число...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        // 1. Оновлення полів вгору (зменшення)
+        function updatePreviousFields(startGroup, baseValue) {
+            let prevGroup = startGroup.previousElementSibling;
+            let val = baseValue;
+
+            while (prevGroup) {
+                const field = prevGroup.querySelector('.input-group__field');
+                if (field) {
+                    val -= 1;
+                    field.value = val;
+                }
+                prevGroup = prevGroup.previousElementSibling;
+            }
+        }
+
+        // 2. Оновлення полів вниз (збільшення)
+        function updateNextFields(startGroup, baseValue) {
+            let nextGroup = startGroup.nextElementSibling;
+            let val = baseValue;
+
+            while (nextGroup) {
+                const field = nextGroup.querySelector('.input-group__field');
+                if (field) {
+                    val += 1;
+                    field.value = val;
+                }
+                nextGroup = nextGroup.nextElementSibling;
+            }
+        }
+
+        function getValidValue(field) {
+            const inputValue = field.value.trim();
+            
+            if (inputValue === '' || inputValue === '-') {
+                throw new Error('INCOMPLETE');
+            }
+
+            const parsedValue = parseInt(inputValue, 10);
+
+            if (isNaN(parsedValue)) {
+                throw new Error(`Помилка зчитування: значення "${inputValue}" не є коректним цілим числом.`);
+            }
+
+            return parsedValue;
+        }
+
+
+        function handleChainCalculation(e, errorDisplay) {
+            const currentField = e.target;
+
+            if (currentField.tagName === 'INPUT' && currentField.classList.contains('input-group__field')) {
+                const currentGroup = currentField.closest('.input-group');
+
+                if (currentGroup) {
+                    currentGroup.classList.remove('input-group--error');
+                }
+                if (errorDisplay) {
+                    errorDisplay.innerText = '';
+                    errorDisplay.style.display = 'none';
+                }
+
+                try {
+                    const baseValue = getValidValue(currentField);
+                    
+                    if (currentGroup) {
+                        updatePreviousFields(currentGroup, baseValue);
+                        updateNextFields(currentGroup, baseValue);
+                    }
+
+                } catch (error) {
+                    if (error.message === 'INCOMPLETE') {
+                        return;
+                    } else {
+                        if (errorDisplay) {
+                            errorDisplay.innerText = error.message;
+                            errorDisplay.style.display = 'block';
+                        }
+                        if (currentGroup) {
+                            currentGroup.classList.add('input-group--error');
+                        }
+                    }
+                }
+            }
+        }
+
+        window.onload = function() {
+            const inputsContainer = document.querySelector('.task-card__inputs-list');
+            const errorBlock = document.getElementById('errorBlock');
+
+            if (inputsContainer) {
+                inputsContainer.addEventListener('input', function(e) {
+                    handleChainCalculation(e, errorBlock);
+                });
+            }
+        };
+    </script>
+    </body>
+</html>

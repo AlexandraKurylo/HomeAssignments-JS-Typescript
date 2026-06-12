@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 7 - Ефект падаючого снігу</title>
+        <style>
+            body {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .task-card__container {
+                background: rgba(30, 41, 59, 0.8);
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(8px);
+                position: relative;
+                z-index: 10;
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .snowflake {
+                color: #ffffff;
+                position: absolute;
+                top: 0;
+                left: 0;
+                line-height: 1;
+                user-select: none;
+                pointer-events: none;
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <h2 class="task-card__title">Задача 7</h2>
+                <p class="task-card__description">Відобразити падаючий сніг.
+                    Сніжинка з’являється у верхній частині екрану (top =0) і з
+                    випадковою швидкістю рухається вниз (у setInterval викликати
+                    метод, у якому додавати крок до top). Як тільки сніжинка
+                    досягає нижньої частини екрану (top > maxTop) вона знову
+                    повинна з’явитись у верхній частині екрану (top=0).</p>
+                <div class="task-card__error-message" id="errorBlock"></div>
+            </div>
+        </div>
+
+        <script>
+        function getRandomValue(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Snowflake {
+            constructor(bodyElement) {
+                if (bodyElement) {
+                    this.body = bodyElement;
+                    this.element = document.createElement('div');
+                    this.element.classList.add('snowflake');
+                    this.element.innerText = '❄';
+                    this.element.style.fontSize = getRandomValue(10, 25) + 'px';
+                    this.top = getRandomValue(-50, -10);
+                    this.left = getRandomValue(0, window.innerWidth - 30);
+                    this.speed = getRandomValue(1.5, 4.5);
+                    this.element.style.left = this.left + 'px';
+                    this.element.style.top = this.top + 'px';
+                    this.body.appendChild(this.element);
+                } else {
+                    throw new Error("Не передано батьківський елемент body для створення сніжинки.");
+                }
+            }
+
+            updatePosition() {
+                if (this.element) {
+                    this.top += this.speed;
+                    const maxTop = window.innerHeight;
+                    if (this.top > maxTop) {
+                        this.top = 0;
+                        this.left = getRandomValue(0, window.innerWidth - 30);
+                        this.element.style.left = this.left + 'px';
+                        this.speed = getRandomValue(1.5, 4.5);
+                    }
+
+                    this.element.style.top = this.top + 'px';
+                } else {
+                    throw new Error("Спроба оновити позицію відсутнього DOM-елемента сніжинки.");
+                }
+            }
+        }
+
+        window.onload = function() {
+            const errorBlock = document.getElementById('errorBlock');
+            const body = document.body;
+            const snowflakesCount = 40;
+            const snowflakesArray = [];
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Елемент #errorBlock відсутній у розмітці сторінки.");
+                }
+
+                if (body) {
+                    for (let i = 0; i < snowflakesCount; i++) {
+                        const flake = new Snowflake(body);
+                        snowflakesArray.push(flake);
+                    }
+
+                    setInterval(function() {
+                        try {
+                            snowflakesArray.forEach(function(flake) {
+                                flake.updatePosition();
+                            });
+                        } catch (loopError) {
+                            if (errorBlock) {
+                                errorBlock.innerText = loopError.message;
+                                errorBlock.style.display = 'block';
+                            }
+                        }
+                    }, 33);
+                } else {
+                    throw new Error("Не вдалося отримати доступ до document.body.");
+                }
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>
