@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 5 - Система бронювання</title>
+        <style>
+            .booking-app {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .booking-app__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .booking-app__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 900px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .booking-app__title {
+                font-size: 24px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .booking-app__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 30px;
+                line-height: 1.5;
+            }
+
+            .booking-app__error-message {
+                background: rgba(239, 68, 68, 0.15);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .booking-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+
+            @media (max-width: 768px) {
+                .booking-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .transport-section {
+                background: #0f172a;
+                border: 1px solid #334155;
+                border-radius: 16px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .transport-section__title {
+                font-size: 16px;
+                font-weight: 700;
+                color: #cbd5e1;
+                border-bottom: 2px solid #1e293b;
+                padding-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .transport-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .transport-item {
+                background: #1e293b;
+                border: 1px solid #475569;
+                border-radius: 10px;
+                padding: 12px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                user-select: none;
+            }
+
+            .transport-item:hover {
+                border-color: #38bdf8;
+                background: rgba(56, 189, 248, 0.05);
+                transform: translateX(4px);
+            }
+
+            .transport-section--booked .transport-item {
+                cursor: default;
+                border-color: #22c55e;
+                background: rgba(34, 197, 94, 0.05);
+            }
+            
+            .transport-section--booked .transport-item:hover {
+                transform: none;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="booking-app">
+            <div class="booking-app__container">
+                <div class="booking-app__main">
+                    <h2 class="booking-app__title">Задача 5</h2>
+                    <p class="booking-app__description">Бронювання таксі та
+                        велосипедів (по аналогії з тим, що ми робили на
+                        практиці). Відображаються списки авто та велосипедів,
+                        які можна забронювати. При бронюванні вибрані авто та
+                        вибрані велосипеди відображаються у окремих списках.
+                    </p>
+                    <div class="booking-app__error-message"
+                        id="errorBlock"></div>
+                    <div id="bookingGridContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        class TransportSection {
+            constructor(title, items, isBookedSection = false) {
+                this.title = title;
+                this.items = items;
+                this.isBookedSection = isBookedSection;
+            }
+
+            createHeader() {
+                const headerEl = document.createElement('h2');
+                headerEl.className = 'transport-section__title';
+                headerEl.innerText = this.title;
+                return headerEl;
+            }
+
+            sendSelectionEvent(data) {
+                if (this.$el) {
+                    const event = new CustomEvent('selection', {
+                        bubbles: true,
+                        detail: { data }
+                    });
+                    this.$el.dispatchEvent(event);
+                } else {
+                    throw new Error(`Не вдалося сгенерувати кастомну подію для "${this.title}", бо DOM-вузол не ініціалізовано.`);
+                }
+            }
+
+            itemSelect(e) {
+                if (this.isBookedSection) return;
+
+                if (e.target && e.target.classList.contains('transport-item')) {
+                    const selectedText = e.target.innerText;
+                    this.sendSelectionEvent(selectedText);
+                    
+                    this.items = this.items.filter((item) => item !== selectedText);
+                    e.target.remove();
+                } else {
+                    return; 
+                }
+            }
+
+            createItem(itemName) {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'transport-item';
+                itemEl.innerText = itemName;
+                return itemEl;
+            }
+
+            createItems() {
+                const listContainer = document.createElement('div');
+                listContainer.className = 'transport-list';
+                
+                this.items.forEach((item) => {
+                    listContainer.append(this.createItem(item));
+                });
+
+                listContainer.onclick = this.itemSelect.bind(this);
+                return listContainer;
+            }
+
+            addItem(item) {
+                if (this.itemsEl) {
+                    this.itemsEl.append(this.createItem(item));
+                } else {
+                    throw new Error(`Помилка додавання: Контейнер списку для "${this.title}" відсутній у DOM.`);
+                }
+            }
+
+            render() {
+                const container = document.createElement('div');
+                container.className = 'transport-section';
+                
+                if (this.isBookedSection) {
+                    container.classList.add('transport-section--booked');
+                }
+
+                container.append(this.createHeader());
+                this.itemsEl = this.createItems();
+                container.append(this.itemsEl);
+
+                this.$el = container;
+                return container;
+            }
+        }
+
+        class BookingSystem {
+            constructor(carsList, bikesList) {
+                this.carsList = carsList;
+                this.bikesList = bikesList;
+
+                this.availableCarsSection = new TransportSection('🚗 Доступні авто', this.carsList);
+                this.availableBikesSection = new TransportSection('🚲 Доступні велосипеди', this.bikesList);
+                
+                this.bookedCarsSection = new TransportSection('✅ Заброньовані авто', [], true);
+                this.bookedBikesSection = new TransportSection('✅ Заброньовані велосипеди', [], true);
+            }
+
+            bookCar(e) {
+                if (e && e.detail && e.detail.data) {
+                    this.bookedCarsSection.addItem(e.detail.data);
+                } else {
+                    throw new Error("Помилка бронювання авто");
+                }
+            }
+
+            bookBike(e) {
+                if (e && e.detail && e.detail.data) {
+                    this.bookedBikesSection.addItem(e.detail.data);
+                } else {
+                    throw new Error("Помилка бронювання велосипеда");
+                }
+            }
+
+            render(targetSelector) {
+                const mainGrid = document.createElement('div');
+                mainGrid.className = 'booking-grid';
+
+                const leftColumn = document.createElement('div');
+                leftColumn.className = 'booking-grid__column';
+                leftColumn.append(this.availableCarsSection.render());
+                leftColumn.append(this.availableBikesSection.render());
+
+                const rightColumn = document.createElement('div');
+                rightColumn.className = 'booking-grid__column';
+                rightColumn.append(this.bookedCarsSection.render());
+                rightColumn.append(this.bookedBikesSection.render());
+
+                mainGrid.append(leftColumn);
+                mainGrid.append(rightColumn);
+
+                if (this.availableCarsSection.$el && this.availableBikesSection.$el) {
+                    this.availableCarsSection.$el.addEventListener('selection', this.bookCar.bind(this));
+                    this.availableBikesSection.$el.addEventListener('selection', this.bookBike.bind(this));
+                } else {
+                    throw new Error("Компоненти секцій не повернули коректні DOM-вузли.");
+                }
+
+                if (targetSelector) {
+                    const target = document.querySelector(targetSelector);
+                    if (target) {
+                        target.append(mainGrid);
+                    } else {
+                        throw new Error(`Цільовий контейнер за селектором "${targetSelector}" не знайдено в HTML-розмітці.`);
+                    }
+                } else {
+                    throw new Error("Не передано селектор для відображення системи бронювання.");
+                }
+
+                this.$el = mainGrid;
+                return mainGrid;
+            }
+        }
+
+        window.onload = function () {
+            const errorBlock = document.getElementById('errorBlock');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Блок #errorBlock відсутній у верстці.");
+                }
+
+                const initialCars = ['Tesla Model S', 'Toyota Camry', 'BMW X5', 'Hyundai Ionic'];
+                const initialBikes = ['Giant Escape 1', 'Trek Marlin 5', 'Cannondale Trail', 'Specialized Sirrus'];
+
+                const system = new BookingSystem(initialCars, initialBikes);
+                system.render('#bookingGridContainer');
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

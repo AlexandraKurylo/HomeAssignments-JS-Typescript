@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 8 - Фільтр авто</title>
+        <style>
+            .car-manager {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .car-manager__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .car-manager__app {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 650px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .car-manager__error-message {
+                background: rgba(239, 68, 68, 0.15);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .filter-panel {
+                border: 2px solid #22c55e;
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 30px; 
+            }
+
+            .filter-panel__title {
+                font-size: 18px;
+                font-weight: 800;
+                color: #22c55e;
+                margin-bottom: 15px;
+            }
+
+            .filter-panel__grid {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .filter-panel__group {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .filter-panel__label {
+                font-size: 15px;
+                font-weight: 700;
+                color: #22c55e;
+                white-space: nowrap;
+            }
+
+            .filter-panel__select {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-family: inherit;
+                font-size: 14px;
+                color: #ffffff;
+                outline: none;
+                width: 100%;
+                cursor: pointer;
+            }
+
+            .filter-panel__select:focus {
+                border-color: #22c55e;
+            }
+
+            .car-list-section {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .car-list-section__title {
+                font-size: 18px;
+                font-weight: 800;
+                color: #991b1b;
+                border-bottom: 2px solid #334155;
+                padding-bottom: 6px;
+            }
+
+            .car-list-section__container {
+                border: 2px solid #991b1b;
+                border-radius: 16px;
+                padding: 20px;
+                background: #0f172a;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-height: 100px;
+            }
+
+            .car-item {
+                font-size: 15px;
+                font-weight: 700;
+                color: #22c55e;
+                padding: 2px 0;
+            }
+
+            .car-item__no-results {
+                color: #64748b;
+                font-style: italic;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="car-manager">
+            <div class="car-manager__container">
+                <div class="car-manager__app">
+                    <div class="car-manager__error-message"
+                        id="errorBlock"></div>
+                    <div id="carAppContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        class CarFilterManager {
+            constructor(carsData) {
+                this.carsData = carsData;
+            }
+
+            getUniqueValues(key) {
+                const allValues = this.carsData.map(car => car[key]);
+                return [...new Set(allValues)];
+            }
+
+            createCarListMarkup(filteredCars) {
+                const container = document.createElement('div');
+                container.className = 'car-list-section__container';
+
+                if (filteredCars.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'car-item__no-results';
+                    noResults.innerText = 'Немає автомобілів, що відповідають вибраним критеріям';
+                    container.append(noResults);
+                } else {
+                    filteredCars.forEach((car) => {
+                        const carRow = document.createElement('div');
+                        carRow.className = 'car-item';
+                        carRow.innerText = `${car.brand} - ${car.year} р. - ${car.price}$`;
+                        container.append(carRow);
+                    });
+                }
+
+                return container;
+            }
+
+            onFilterChange() {
+                if (this.$brandSelect && this.$yearSelect) {
+                    const selectedBrand = this.$brandSelect.value;
+                    const selectedYear = this.$yearSelect.value;
+                    const filtered = this.carsData.filter((car) => {
+                        const matchesBrand = (selectedBrand === 'all' || car.brand === selectedBrand);
+                        const matchesYear = (selectedYear === 'all' || car.year.toString() === selectedYear);
+                        return matchesBrand && matchesYear;
+                    });
+
+                    if (this.$listDisplayArea) {
+                        this.$listDisplayArea.innerHTML = '';
+                        this.$listDisplayArea.append(this.createCarListMarkup(filtered));
+                    } else {
+                        throw new Error("Помилка фільтрації");
+                    }
+                } else {
+                    throw new Error("Помилка обробки");
+                }
+            }
+
+            createSelectElement(uniqueValues, defaultValueText) {
+                const select = document.createElement('select');
+                select.className = 'filter-panel__select';
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'all';
+                defaultOption.innerText = defaultValueText;
+                select.append(defaultOption);
+
+                uniqueValues.forEach((val) => {
+                    const option = document.createElement('option');
+                    option.value = val;
+                    option.innerText = val;
+                    select.append(option);
+                });
+
+                select.onchange = this.onFilterChange.bind(this);
+                return select;
+            }
+
+            render(targetSelector) {
+                const mainWrapper = document.createElement('div');
+
+                const filterBlock = document.createElement('div');
+                filterBlock.className = 'filter-panel';
+
+                const filterTitle = document.createElement('h2');
+                filterTitle.className = 'filter-panel__title';
+                filterTitle.innerText = 'Фільтри пошуку';
+                filterBlock.append(filterTitle);
+
+                const filterGrid = document.createElement('div');
+                filterGrid.className = 'filter-panel__grid';
+
+                const brandGroup = document.createElement('div');
+                brandGroup.className = 'filter-panel__group';
+                const brandLabel = document.createElement('label');
+                brandLabel.className = 'filter-panel__label';
+                brandLabel.innerText = 'Марка';
+                
+                const uniqueBrands = this.getUniqueValues('brand');
+                this.$brandSelect = this.createSelectElement(uniqueBrands, 'Усі марки');
+                
+                brandGroup.append(brandLabel);
+                brandGroup.append(this.$brandSelect);
+
+                const yearGroup = document.createElement('div');
+                yearGroup.className = 'filter-panel__group';
+                const yearLabel = document.createElement('label');
+                yearLabel.className = 'filter-panel__label';
+                yearLabel.innerText = 'Рік випуску';
+                
+                const uniqueYears = this.getUniqueValues('year');
+                this.$yearSelect = this.createSelectElement(uniqueYears, 'Усі роки');
+                
+                yearGroup.append(yearLabel);
+                yearGroup.append(this.$yearSelect);
+
+                filterGrid.append(brandGroup);
+                filterGrid.append(yearGroup);
+                filterBlock.append(filterGrid);
+
+                const listSection = document.createElement('div');
+                listSection.className = 'car-list-section';
+
+                const listTitle = document.createElement('h2');
+                listTitle.className = 'car-list-section__title';
+                listTitle.innerText = 'Список';
+                listSection.append(listTitle);
+
+                this.$listDisplayArea = document.createElement('div');
+                this.$listDisplayArea.append(this.createCarListMarkup(this.carsData));
+                listSection.append(this.$listDisplayArea);
+
+                mainWrapper.append(filterBlock);
+                mainWrapper.append(listSection);
+
+                if (targetSelector) {
+                    const target = document.querySelector(targetSelector);
+                    if (target) {
+                        target.append(mainWrapper);
+                    } else {
+                        throw new Error(`Селектор "${targetSelector}" не знайдено в HTML-документі.`);
+                    }
+                } else {
+                    throw new Error("Метод render не отримав цільовий селектор.");
+                }
+
+                this.$el = mainWrapper;
+                return mainWrapper;
+            }
+        }
+
+
+        window.onload = function () {
+            const errorBlock = document.getElementById('errorBlock');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Блок відображення помилок #errorBlock відсутній.");
+                }
+
+                const carsDatabase = [
+                    { brand: 'Mersedes', year: 2018, price: 25000 },
+                    { brand: 'Opel', year: 2000, price: 5000 },
+                    { brand: 'Opel', year: 2004, price: 15000 },
+                    { brand: 'Audi', year: 2000, price: 7000 }
+                ];
+
+                const salon = new CarFilterManager(carsDatabase);
+                salon.render('#carAppContainer');
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 4 - Роздільний підрахунок кліків</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .task-card__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 650px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 25px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .stats-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px; 
+                background: #0f172a;
+                border-radius: 14px;
+                overflow: hidden;
+                border: 1px solid #334155;
+            }
+
+            .stats-table__cell {
+                padding: 16px;
+                text-align: left;
+                font-size: 14px;
+                border-bottom: 1px solid #334155;
+            }
+
+            .stats-table__cell--header {
+                background: #1e293b;
+                font-weight: 700;
+                color: #cbd5e1;
+                text-transform: uppercase;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+            }
+
+            .stats-table__cell--count {
+                font-weight: 700;
+                color: #38bdf8;
+                text-align: right;
+                font-size: 18px;
+            }
+
+            .interactive-zone {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px;
+                background: rgba(51, 65, 85, 0.2);
+                border: 1px dashed #475569;
+                border-radius: 16px;
+            }
+
+            .interactive-zone__row {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .interactive-zone__button {
+                background: #2563eb;
+                color: #ffffff;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s ease;
+            }
+
+            .interactive-zone__button:hover {
+                background: #1d4ed8;
+            }
+
+            .interactive-zone__input {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 8px;
+                padding: 8px 14px;
+                font-family: inherit;
+                font-size: 14px;
+                color: #ffffff;
+                outline: none;
+                flex: 1;
+                min-width: 120px;
+                transition: border-color 0.2s ease;
+            }
+
+            .interactive-zone__input:focus {
+                border-color: #38bdf8;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 4</h2>
+                    <p class="task-card__description">На сторінці міститься
+                        певна кількість кнопок і інпутів. Підраховувати загальну
+                        кількість кліків окремо на кнопках і окремо на
+                        інпутах.</p>
+                    <div class="task-card__error-message" id="errorBlock"></div>
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="stats-table__cell stats-table__cell--header">Елемент
+                                    взаємодії</th>
+                                <th
+                                    class="stats-table__cell stats-table__cell--header"
+                                    style="text-align: right;">Кількість
+                                    кліків</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="stats-table__cell">Усі кнопки (<code
+                                        style="color: #f59e0b;">button</code>)</td>
+                                <td
+                                    class="stats-table__cell stats-table__cell--count"
+                                    id="buttonClicksCount">0</td>
+                            </tr>
+                            <tr>
+                                <td class="stats-table__cell">Усі поля вводу
+                                    (<code
+                                        style="color: #f59e0b;">input</code>)</td>
+                                <td
+                                    class="stats-table__cell stats-table__cell--count"
+                                    id="inputClicksCount">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="interactive-zone" id="clickZone">
+                        <div class="interactive-zone__row">
+                            <button class="interactive-zone__button"
+                                type="button">Кнопка 1</button>
+                            <input class="interactive-zone__input" type="text"
+                                value="Текстове поле 1">
+                        </div>
+                        <div class="interactive-zone__row">
+                            <button class="interactive-zone__button"
+                                type="button">Кнопка 2</button>
+                            <input class="interactive-zone__input" type="number"
+                                value="100">
+                        </div>
+                        <div class="interactive-zone__row">
+                            <button class="interactive-zone__button"
+                                type="button">Кнопка 3</button>
+                            <input class="interactive-zone__input" type="email"
+                                value="test@example.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        let buttonClicks = 0;
+        let inputClicks = 0;
+        let buttonCounterElement = null;
+        let inputCounterElement = null;
+
+        function handleZoneClick(e) {
+            const target = e.target;
+
+            if (target) {
+                if (target.tagName === 'BUTTON' && target.classList.contains('interactive-zone__button')) {
+                    buttonClicks++;
+                    if (buttonCounterElement) {
+                        buttonCounterElement.innerText = buttonClicks;
+                    }
+                }
+
+                if (target.tagName === 'INPUT' && target.classList.contains('interactive-zone__input')) {
+                    inputClicks++;
+                    if (inputCounterElement) {
+                        inputCounterElement.innerText = inputClicks;
+                    }
+                }
+
+            } else {
+                throw new Error("Об'єкт target недійсний.");
+            }
+        }
+
+        window.onload = function() {
+            const errorBlock = document.getElementById('errorBlock');
+            const clickZone = document.getElementById('clickZone');
+            
+            buttonCounterElement = document.getElementById('buttonClicksCount');
+            inputCounterElement = document.getElementById('inputClicksCount');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Блок #errorBlock відсутній у розмітці сторінки.");
+                }
+
+                if (!buttonCounterElement || !inputCounterElement) {
+                    throw new Error("Не знайдено текстові комірки для виведення лічильників.");
+                }
+
+                if (clickZone) {
+                    clickZone.addEventListener('click', function(e) {
+                        try {
+                            handleZoneClick(e);
+                        } catch (clickError) {
+                            if (errorBlock) {
+                                errorBlock.innerText = clickError.message;
+                                errorBlock.style.display = 'block';
+                            }
+                        }
+                    });
+                } else {
+                    throw new Error("Контейнер інтерактивної зони #clickZone не знайдено.");
+                }
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 1 - Сузір'я мерехтливих зірок</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+                color: #f1f5f9;
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .task-card__main {
+                background: rgba(30, 41, 59, 0.7);
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(12px);
+                position: relative;
+                z-index: 10;
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .pulsing-star {
+                color: #f59e0b;
+                position: absolute;
+                font-size: 40px;
+                line-height: 1;
+                user-select: none;
+                pointer-events: none;
+                text-shadow: 0 0 15px rgba(245, 158, 11, 0.7);
+                z-index: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                will-change: transform; 
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 1</h2>
+                    <p class="task-card__description">Сяючі зорі. Вказана
+                        кількість зірочок повинна з’являтися у випадковій
+                        частині екрану. Кожна зірка (це екземпляр класу Star) з
+                        певним кроком і інтервалом збільшується від мінімального
+                        до максимального розміру. Як тільки досягнути
+                        максимального розміру зірочка повинна з’являтися у іншій
+                        випадковій позиції.
+                    </p>
+                    <div class="task-card__error-message" id="errorBlock"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        function getRandomValue(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Star {
+            constructor(parentContainer) {
+                if (parentContainer) {
+                    this.parent = parentContainer;
+                    this.element = document.createElement('div');
+                    this.element.classList.add('pulsing-star');
+                    this.element.innerText = '★';
+                    this.minScale = 0.2;
+                    this.maxScale = 2.0;
+                    this.currentScale = getRandomValue(this.minScale, this.maxScale);
+                    this.growthStep = getRandomValue(0.02, 0.05);
+                    this.teleportToRandomPosition();
+                    this.element.style.transform = `translate(-50%, -50%) scale(${this.currentScale})`;
+
+                    this.parent.appendChild(this.element);
+                } else {
+                    throw new Error("Не передано контейнер для додавання зірочки.");
+                }
+            }
+
+            teleportToRandomPosition() {
+                if (this.element) {
+                    const padding = 100;
+                    const randomX = getRandomValue(padding, window.innerWidth - padding);
+                    const randomY = getRandomValue(padding, window.innerHeight - padding);
+
+                    this.element.style.left = randomX + 'px';
+                    this.element.style.top = randomY + 'px';
+                } else {
+                    throw new Error("DOM-елемент зірочки не знайдено.");
+                }
+            }
+
+            updateScale() {
+                if (this.element) {
+                    this.currentScale += this.growthStep;
+                    if (this.currentScale > this.maxScale) {
+                        this.currentScale = this.minScale;
+                        this.teleportToRandomPosition();
+                        this.growthStep = getRandomValue(0.02, 0.05);
+                    }
+
+                    this.element.style.transform = `translate(-50%, -50%) scale(${this.currentScale})`;
+                } else {
+                    throw new Error("Спроба оновити розмір відсутньої зірочки.");
+                }
+            }
+        }
+
+        window.onload = function() {
+            const errorBlock = document.getElementById('errorBlock');
+            const background = document.querySelector(".task-card");
+            
+            const starsCount = 25; 
+            const starsArray = [];
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Елемент #errorBlock відсутній у розмітці сторінки.");
+                }
+
+                if (background) {
+                    for (let i = 0; i < starsCount; i++) {
+                        const newStar = new Star(background);
+                        starsArray.push(newStar);
+                    }
+
+                    setInterval(function() {
+                        try {
+                            starsArray.forEach(function(star) {
+                                star.updateScale();
+                            });
+                        } catch (loopError) {
+                            if (errorBlock) {
+                                errorBlock.innerText = loopError.message;
+                                errorBlock.style.display = 'block';
+                            }
+                        }
+                    }, 30);
+
+                } else {
+                    throw new Error("Не вдалося отримати доступ до document.body.");
+                }
+
+            } catch (initError) {
+                if (errorBlock && initError.message !== "Елемент #errorBlock відсутній у розмітці сторінки.") {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

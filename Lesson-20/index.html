@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="./css/reset.css">
+        <title>Lesson-20</title>
+        <style>
+
+        .page-body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .homework-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+
+        .main-title {
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 800;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .tasks-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .task-card {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tasks-list__item:nth-child(1) .task-card { animation-delay: 0.1s; }
+        .tasks-list__item:nth-child(2) .task-card { animation-delay: 0.2s; }
+        .tasks-list__item:nth-child(3) .task-card { animation-delay: 0.3s; }
+        .tasks-list__item:nth-child(4) .task-card { animation-delay: 0.4s; }
+        .tasks-list__item:nth-child(5) .task-card { animation-delay: 0.5s; }
+
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #38bdf8, #818cf8);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-4px);
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .task-card:hover::before {
+            opacity: 1;
+        }
+
+        .task-card__title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .task-card:hover .task-card__title {
+            color: #60a5fa;
+        }
+
+        .task-card__paragraph {
+            color: #94a3b8;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .task-card__text p:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .task-card__code {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .task-card__picture {
+            display: block;
+            margin-top: 18px;         
+            width: 50%;              
+            border-radius: 12px;      
+            overflow: hidden;         
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(15, 23, 42, 0.4); 
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.3s ease;
+        }
+
+
+        .task-card__image {
+            display: block;
+            width: 100%;              
+            height: auto;             
+            max-height: 250px;        
+            object-fit: cover;        
+            object-position: top center; 
+            filter: brightness(0.9);   
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-body { padding: 20px 10px; }
+            .main-title { font-size: 32px; }
+            .task-card { padding: 20px; }
+        }
+    </style>
+    </head>
+
+    <body class="page-body">
+        <div class="homework-container">
+            <h1 class="main-title">Домашнє завдання №20</h1>
+
+            <ul class="tasks-list">
+                <li class="tasks-list__item">
+                    <a href="./tasks/task1.html" class="task-card">
+                        <h2 class="task-card__title">Задача 1.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Сяючі зорі. Вказана
+                                кількість зірочок повинна з’являтися у
+                                випадковій частині екрану. Кожна зірка (це
+                                екземпляр класу Star) з певним кроком і
+                                інтервалом збільшується від мінімального до
+                                максимального розміру. Як тільки досягнути
+                                максимального розміру зірочка повинна з’являтися
+                                у іншій випадковій позиції.
+
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task2.html" class="task-card">
+                        <h2 class="task-card__title">Задача 2.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Байрактар. З
+                                верхньої частини екрану у випадковій позиції по
+                                горизонталі з’являються танки, які їдуть вниз.
+                                При кліку на танк він вибухає і зникає з екрану.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task3.html" class="task-card">
+                        <h2 class="task-card__title">Задача 3.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">На формі вводять 7
+                                числових значень (вік, зріст, вага, заробітна
+                                плата, стаж, номер відділу, порядковий номер).
+                                Додати подію обробки події click на форму і якщо
+                                клік на внутрішньому input, то автоматично
+                                замінювати значення його на 0. Використати
+                                делегування
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task4.html" class="task-card">
+                        <h2 class="task-card__title">Задача 4.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">На сторінці
+                                міститься певна кількість кнопок і інпутів.
+                                Підраховувати загальну кількість кліків окремо
+                                на кнопках і окремо на інпутах.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task5.html" class="task-card">
+                        <h2 class="task-card__title">Задача 5.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Бронювання таксі та
+                                велосипедів (по аналогії з тим, що ми робили на
+                                практиці). Відображаються списки авто та
+                                велосипедів, які можна забронювати. При
+                                бронюванні вибрані авто та вибрані велосипеди
+                                відображаються у окремих списках.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task6.html" class="task-card">
+                        <h2 class="task-card__title">Задача 7.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Динамічний пошук. Є
+                                список працівників і поле пошуку. При введенні
+                                відображаються усі, які містять вказаний
+                                фрагмент
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task7.png" alt="task6">
+                        </picture>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task7.html" class="task-card">
+                        <h2 class="task-card__title">Задача 8.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph"> Дано список
+                                автомобілів (марка, рік випуску, ціна).
+                                Сформувати елементи для фільтрування з
+                                використанням випадаючого списку (контент цих
+                                випадаючих списків сформувати у залежності від
+                                переданого списку).
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task8.png" alt="task6">
+                        </picture>
+                    </a>
+                </li>
+
+                <li class="tasks-list__item">
+                    <a href="./tasks/task8.html" class="task-card">
+                        <h2 class="task-card__title">Задача 9.</h2>
+                        <div class="task-card__text">
+                            <p class="task-card__paragraph">Перекладач.
+                                Користувачу виводять змішані картки з словами на
+                                англійській і українській мові. Користувач
+                                поступово клікає на картки (виділяємо синьою
+                                рамкою). Якщо знайдено правильні пари карток, що
+                                відповідають одному слову, то видаляємо ці
+                                картки. Інакше - виділяємо червоною рамкою і
+                                через секунду забираємо рамку.
+                            </p>
+                        </div>
+                        <picture class="task-card__picture">
+                            <img class="task-card__image"
+                                src="./images/task9.png" alt="task6">
+                        </picture>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

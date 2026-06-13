@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 7- Динамічний пошук працівників</title>
+        <style>
+            .search-task {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .search-task__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .search-card {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 450px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .search-card__error-message {
+                background: rgba(239, 68, 68, 0.15);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .employee-search {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .employee-search__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+            }
+
+            .employee-search__label {
+                font-size: 18px;
+                font-weight: 800;
+                color: #ef4444;
+            }
+
+            .employee-search__input {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-family: inherit;
+                font-size: 14px;
+                color: #ffffff;
+                outline: none;
+                width: 65%;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .employee-search__input:focus {
+                border-color: #38bdf8;
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+            }
+
+            .employee-search__content {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .employee-search__title {
+                font-size: 16px;
+                font-weight: 700;
+                color: #ef4444;
+                border-bottom: 2px solid #334155;
+                padding-bottom: 6px;
+            }
+
+            .employee-search__list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .employee-search__item {
+                font-size: 15px;
+                font-weight: 700;
+                color: #ef4444;
+                padding: 4px 0;
+                transition: color 0.2s ease;
+            }
+
+            .employee-search__no-results {
+                font-size: 14px;
+                color: #64748b;
+                font-style: italic;
+                padding: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="search-task">
+            <div class="search-task__container">
+                <div class="serach-task__card search-card">
+                    <div class="search-card__error-message"
+                        id="errorBlock"></div>
+                    <div id="searchAppContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        class DynamicSearch {
+            constructor(employeesList) {
+                this.employeesList = employeesList;
+            }
+
+            createList(listData) {
+                const listContainer = document.createElement('div');
+                listContainer.className = 'employee-search__list';
+
+                if (listData.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'employee-search__no-results';
+                    noResults.innerText = 'Нікого не знайдено за вказаним фрагментом';
+                    listContainer.append(noResults);
+                } else {
+                    listData.forEach((name) => {
+                        const item = document.createElement('div');
+                        item.className = 'employee-search__item';
+                        item.innerText = name;
+                        listContainer.append(item);
+                    });
+                }
+
+                return listContainer;
+            }
+
+            onSearchInput(e) {
+                if (e && e.target) {
+                    const query = e.target.value.toLowerCase().trim();
+                    const filteredList = this.employeesList.filter((employee) => 
+                        employee.toLowerCase().includes(query)
+                    );
+
+                    if (this.$listContainer) {
+                        this.$listContainer.innerHTML = '';
+                        this.$listContainer.append(this.createList(filteredList));
+                    } else {
+                        throw new Error("Помилка фільтрації");
+                    }
+                } else {
+                    throw new Error("Помилка обробки введення");
+                }
+            }
+
+            render(targetSelector) {
+                const mainContainer = document.createElement('div');
+                mainContainer.className = 'employee-search';
+
+                const header = document.createElement('div');
+                header.className = 'employee-search__header';
+
+                const label = document.createElement('label');
+                label.className = 'employee-search__label';
+                label.innerText = "Ім'я";
+                
+                const input = document.createElement('input');
+                input.className = 'employee-search__input';
+                input.type = 'text';
+                input.placeholder = 'Я шукаю...';
+
+                header.append(label);
+                header.append(input);
+
+                const content = document.createElement('div');
+                content.className = 'employee-search__content';
+
+                const title = document.createElement('h3');
+                title.className = 'employee-search__title';
+                title.innerText = 'Працівники';
+
+                this.$listContainer = document.createElement('div');
+                this.$listContainer.append(this.createList(this.employeesList));
+
+                content.append(title);
+                content.append(this.$listContainer);
+                
+                mainContainer.append(header);
+                mainContainer.append(content);
+                input.addEventListener('input', this.onSearchInput.bind(this));
+
+                if (targetSelector) {
+                    const target = document.querySelector(targetSelector);
+                    if (target) {
+                        target.append(mainContainer);
+                    } else {
+                        throw new Error(`Цільовий тег за селектором "${targetSelector}" не знайдено на сторінці.`);
+                    }
+                } else {
+                    throw new Error("Не передано селектор для монтування компонента.");
+                }
+
+                this.$el = mainContainer;
+                return mainContainer;
+            }
+        }
+
+
+        window.onload = function () {
+            const errorBlock = document.getElementById('errorBlock');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Елемент #errorBlock відсутній у верстці.");
+                }
+
+                const initialEmployees = [
+                    'Іванов І.І.',
+                    'Петров П.П.',
+                    'Скрипка С.П.',
+                    'Гончаренко Г.О.',
+                    'Івась І.І.'
+                ];
+
+                const searchSystem = new DynamicSearch(initialEmployees);
+                searchSystem.render('#searchAppContainer');
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>

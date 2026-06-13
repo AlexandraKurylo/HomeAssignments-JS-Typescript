@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 3 - Делегування подій у формі</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .task-card__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .task-card__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .task-card__description {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 25px;
+                line-height: 1.5;
+            }
+
+            .task-card__error-message {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .employee-form {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .employee-form__field-group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .employee-form__label {
+                font-size: 13px;
+                font-weight: 700;
+                color: #cbd5e1;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .employee-form__input {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 10px;
+                padding: 12px 16px;
+                font-family: inherit;
+                font-size: 15px;
+                color: #ffffff;
+                outline: none;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .employee-form__input:focus {
+                border-color: #38bdf8;
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Задача 3</h2>
+                    <p class="task-card__description">На формі вводять 7
+                        числових значень (вік, зріст, вага, заробітна плата,
+                        стаж, номер відділу, порядковий номер). Додати подію
+                        обробки події click на форму і якщо клік на внутрішньому
+                        input, то автоматично замінювати значення його на 0.
+                        Використати делегування
+                    </p>
+                    <div class="task-card__error-message" id="errorBlock"></div>
+                    <form class="task-card__employee-form employee-form"
+                        id="interactiveForm">
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="age">Вік</label>
+                            <input class="employee-form__input" type="number"
+                                id="age"
+                                value="19">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="height">Зріст
+                                (см)</label>
+                            <input class="employee-form__input" type="number"
+                                id="height" value="153">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="weight">Вага
+                                (кг)</label>
+                            <input class="employee-form__input" type="number"
+                                id="weight" value="42">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="salary">Заробітна
+                                плата ($)</label>
+                            <input class="employee-form__input" type="number"
+                                id="salary" value="1500">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="experience">Стаж
+                                (років)</label>
+                            <input class="employee-form__input" type="number"
+                                id="experience" value="2">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="department">Номер
+                                відділу</label>
+                            <input class="employee-form__input" type="number"
+                                id="department" value="12">
+                        </div>
+                        <div class="employee-form__field-group">
+                            <label class="employee-form__label"
+                                for="orderNumber">Порядковий номер</label>
+                            <input class="employee-form__input" type="number"
+                                id="orderNumber" value="148">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        function handleFormClick(e) {
+            const clickedElement = e.target;
+
+            if (clickedElement) {
+                if (clickedElement.tagName === 'INPUT' && clickedElement.classList.contains('employee-form__input')) {
+                    clickedElement.value = 0;
+                }
+            } else {
+                throw new Error("Об'єкт події target недійсний.");
+            }
+        }
+
+        window.onload = function() {
+            const errorBlock = document.getElementById('errorBlock');
+            const interactiveForm = document.getElementById('interactiveForm');
+
+            try {
+                if (errorBlock) {
+                    errorBlock.innerText = '';
+                    errorBlock.style.display = 'none';
+                } else {
+                    throw new Error("Елемент #errorBlock відсутній у розмітці сторінки.");
+                }
+
+                if (interactiveForm) {
+                    interactiveForm.addEventListener('click', function(e) {
+                        try {
+                            handleFormClick(e);
+                        } catch (clickError) {
+                            if (errorBlock) {
+                                errorBlock.innerText = clickError.message;
+                                errorBlock.style.display = 'block';
+                            }
+                        }
+                    });
+
+                    interactiveForm.addEventListener('submit', function(e) {
+                        if (e) {
+                            e.preventDefault();
+                        } else {
+                            throw new Error("Не вдалося скасувати стандартну дію форми.");
+                        }
+                    });
+
+                } else {
+                    throw new Error("Не вдалося знайти форму #interactiveForm у DOM-дереві.");
+                }
+
+            } catch (initError) {
+                if (errorBlock) {
+                    errorBlock.innerText = initError.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw initError;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>
