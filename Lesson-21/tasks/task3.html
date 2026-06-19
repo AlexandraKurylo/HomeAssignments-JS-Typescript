@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 1, 2 - Банківська Система</title>
+        <style>
+            .bank-panel {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .bank-panel__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .bank-panel__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 750px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .bank-panel__title {
+                font-size: 24px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+            .bank-summary {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .bank-summary__text {
+                font-size: 16px;
+                font-weight: 700;
+                color: #94a3b8;
+            }
+
+            .bank-summary__total {
+                font-size: 20px;
+                font-weight: 800;
+                color: #4ade80;
+            }
+
+            .client-section {
+                margin-bottom: 25px;
+            }
+
+            .client-section__title {
+                font-size: 16px;
+                font-weight: 800;
+                color: #cbd5e1;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 12px;
+                padding-left: 5px;
+            }
+
+            .client-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                list-style: none;
+            }
+
+            .client-card {
+                background: #1e293b;
+                border: 2px solid #334155;
+                border-radius: 14px;
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                transition: all 0.2s ease;
+            }
+
+            .client-card--gold {
+                border-color: #f59e0b;
+                background: linear-gradient(to right, #1e293b, #292524);
+            }
+
+            .client-card__info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex-grow: 1;
+            }
+
+            .client-card__name {
+                font-size: 15px;
+                font-weight: 700;
+                color: #ffffff;
+            }
+
+            .client-card__meta {
+                font-size: 13px;
+                font-weight: 600;
+                color: #64748b;
+            }
+
+            .client-card__meta-gold {
+                color: #fbbf24;
+            }
+
+            .client-card__balance {
+                font-size: 16px;
+                font-weight: 800;
+                color: #38bdf8;
+                white-space: nowrap;
+            }
+
+            .client-card__balance--negative {
+                color: #ef4444;
+            }
+
+            .client-card__actions {
+                display: flex;
+                gap: 8px;
+            }
+
+            .client-card__btn {
+                background: #334155;
+                color: #ffffff;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-family: inherit;
+                font-size: 12px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background 0.2s ease;
+            }
+
+            .client-card__btn:hover {
+                background: #475569;
+            }
+
+            .client-card__btn--deposit {
+                background: rgba(74, 222, 128, 0.15);
+                color: #4ade80;
+            }
+
+            .client-card__btn--deposit:hover {
+                background: rgba(74, 222, 128, 0.25);
+            }
+
+            .client-card__btn--withdraw {
+                background: rgba(239, 68, 68, 0.15);
+                color: #fca5a5;
+            }
+
+            .client-card__btn--withdraw:hover {
+                background: rgba(239, 68, 68, 0.25);
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="bank-panel">
+            <div class="bank-panel__container">
+                <div class="bank-panel__main">
+                    <h2 class="bank-panel__title">🏦 Моніторинг Банківської
+                        Екосистеми</h2>
+                    <div class="bank-summary">
+                        <span class="bank-summary__text">Загальний капітал банку
+                            (Сума
+                            на рахунках):</span>
+                        <span class="bank-summary__total"
+                            id="bankTotalCash">0.00
+                            грн</span>
+                    </div>
+                    <div class="client-section">
+                        <h3 class="client-section__title"
+                            style="color: #38bdf8;">👤
+                            Прості клієнти</h3>
+                        <ul class="client-list" id="regularClientsList"></ul>
+                    </div>
+                    <div class="client-section">
+                        <h3 class="client-section__title"
+                            style="color: #f59e0b;">👑
+                            Клієнти GoldenClient</h3>
+                        <ul class="client-list" id="goldClientsList"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        class Client {
+            constructor(id, name, balance) {
+                this.id = id;
+                this.name = name;
+                this.balance = balance;
+            }
+
+            // Додавання грошей
+            deposit(amount) {
+                if (amount > 0) {
+                    this.balance += amount;
+                } else {
+                    throw new Error("Сума поповнення має бути більшою за 0");
+                }
+            }
+
+            // Зняття грошей
+            withdraw(amount) {
+                if (amount <= 0) {
+                    throw new Error("Сума зняття має бути більшою за 0");
+                }
+                if (this.balance - amount >= 0) {
+                    this.balance -= amount;
+                } else {
+                    throw new Error("Недостатньо коштів на рахунку!");
+                }
+            }
+
+            toString() {
+                return `ID: ${this.id} | Клієнт: ${this.name}`;
+            }
+        }
+
+
+        class GoldenClient extends Client {
+            constructor(id, name, balance, creditLimit, creditRate) {
+                super(id, name, balance);
+                this.creditLimit = creditLimit;
+                this.creditRate = creditRate;
+            }
+
+            // Перевизначення методу зняття з урахуванням кредитного ліміту
+            withdraw(amount) {
+                if (amount <= 0) {
+                    throw new Error("Сума зняття має бути більшою за 0");
+                }
+                if (this.balance + this.creditLimit - amount >= 0) {
+                    this.balance -= amount;
+                } else {
+                    throw new Error("Перевищено ліміт кредитних коштів!");
+                }
+            }
+
+            // Метод визначення пені за використання кредиту
+            getPenalty() {
+                if (this.balance < 0) {
+                    return Math.abs(this.balance) * (this.creditRate / 100);
+                }
+                return 0;
+            }
+
+            toString() {
+                return `${super.toString()} [GOLD]`;
+            }
+        }
+
+        class Bank {
+            constructor() {
+                this.clients = [];
+            }
+
+            addClient(client) {
+                this.clients.push(client);
+            }
+
+            // Вивести всіх простих клієнтів
+            getRegularClients() {
+                return this.clients.filter(client => !(client instanceof GoldenClient));
+            }
+
+            // Вивести всіх клієнтів GoldenClient
+            getGoldClients() {
+                return this.clients.filter(client => client instanceof GoldenClient);
+            }
+
+            // Знайти сумарну кількість грошей на рахунку
+            getTotalBalance() {
+                return this.clients.reduce((sum, client) => sum + client.balance, 0);
+            }
+        }
+
+        class BankApp {
+            constructor(bankInstance) {
+                this.bank = bankInstance;
+            }
+
+            updateUI() {
+                const regularList = document.getElementById('regularClientsList');
+                const goldList = document.getElementById('goldClientsList');
+                const totalCashText = document.getElementById('bankTotalCash');
+
+                if (regularList && goldList && totalCashText) {
+                    regularList.innerHTML = '';
+                    goldList.innerHTML = '';
+
+                    totalCashText.innerText = `${this.bank.getTotalBalance().toFixed(2)} грн`;
+
+                    this.bank.getRegularClients().forEach(client => {
+                        regularList.append(this.createClientDOMCard(client, false));
+                    });
+
+                    this.bank.getGoldClients().forEach(client => {
+                        goldList.append(this.createClientDOMCard(client, true));
+                    });
+                } else {
+                    throw new Error("Елементи відображення відсутні в DOM.");
+                }
+            }
+
+            createClientDOMCard(client, isGold) {
+                const li = document.createElement('li');
+                li.className = isGold ? 'client-card client-card--gold' : 'client-card';
+
+                const infoBlock = document.createElement('div');
+                infoBlock.className = 'client-card__info';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'client-card__name';
+                nameSpan.innerText = client.toString();
+
+                const metaSpan = document.createElement('span');
+                metaSpan.className = isGold ? 'client-card__meta client-card__meta-gold' : 'client-card__meta';
+                
+                if (isGold) {
+                    const penalty = client.getPenalty();
+                    metaSpan.innerText = `Кредитний ліміт: ${client.creditLimit} грн | Ставка: ${client.creditRate}% | Нарахована пеня: ${penalty.toFixed(2)} грн`;
+                } else {
+                    metaSpan.innerText = 'Тариф: Стандартний рахунок фізособи';
+                }
+
+                infoBlock.append(nameSpan);
+                infoBlock.append(metaSpan);
+
+
+                const balanceBlock = document.createElement('div');
+                balanceBlock.className = client.balance < 0 ? 'client-card__balance client-card__balance--negative' : 'client-card__balance';
+                balanceBlock.innerText = `${client.balance.toFixed(2)} грн`;
+
+                const actionsBlock = document.createElement('div');
+                actionsBlock.className = 'client-card__actions';
+
+                const btnDeposit = document.createElement('button');
+                btnDeposit.className = 'client-card__btn client-card__btn--deposit';
+                btnDeposit.innerText = '+ Поповнити';
+                btnDeposit.onclick = () => {
+                    const amount = prompt(`Введіть суму поповнення для ${client.name}:`);
+                    if (amount !== null) {
+                        try {
+                            const val = Number(amount);
+                            if (isNaN(val)) throw new Error("Введено не число!");
+                            client.deposit(val);
+                            this.updateUI();
+                        } catch (err) {
+                            alert(err.message);
+                        }
+                    }
+                };
+
+                const btnWithdraw = document.createElement('button');
+                btnWithdraw.className = 'client-card__btn client-card__btn--withdraw';
+                btnWithdraw.innerText = '- Зняти';
+                btnWithdraw.onclick = () => {
+                    const amount = prompt(`Введіть суму зняття для ${client.name}:`);
+                    if (amount !== null) {
+                        try {
+                            const val = Number(amount);
+                            if (isNaN(val)) throw new Error("Введено не число!");
+                            client.withdraw(val);
+                            this.updateUI();
+                        } catch (err) {
+                            alert(err.message);
+                        }
+                    }
+                };
+
+                actionsBlock.append(btnDeposit);
+                actionsBlock.append(btnWithdraw);
+
+                li.append(infoBlock);
+                li.append(balanceBlock);
+                li.append(actionsBlock);
+
+                return li;
+            }
+        }
+
+        window.onload = function() {
+            const monobank = new Bank();
+            monobank.addClient(new Client(101, "Іванов І.І.", 5000));
+            monobank.addClient(new Client(102, "Петров П.П.", 1200));
+            monobank.addClient(new Client(103, "Сидоров С.С.", 450));
+
+            // Золоті клієнти (+кредитний ліміт та відсоток)
+            monobank.addClient(new GoldenClient(201, "Коваленко О.М.", 15000, 10000, 3.5));
+            monobank.addClient(new GoldenClient(202, "Григоренко В.Д.", -2000, 15000, 5.0)); // Цей клієнт вже в кредиті, нарахується пеня
+
+            const app = new BankApp(monobank);
+            app.updateUI();
+        };
+    </script>
+    </body>
+</html>

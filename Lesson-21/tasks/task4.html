@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 3 - Динамічні Класи Анімації</title>
+        <style>
+        .game {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f1f5f9;
+        }
+
+        .game__container {
+            max-width: 1440px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden; 
+            padding: 20px;
+        }
+
+        .game__title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #38bdf8;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 80px);
+            border: 2px dashed #334155;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .game-object {
+            position: absolute;
+            transform-origin: center center;
+            transition: transform 0.2s linear, left 0.3s ease, top 0.3s ease;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    </head>
+    <body>
+
+        <div class="game">
+            <div class="game__container">
+                <h1 class="game__title">🎬 Світ анімації</h1>
+                <div class="game__app game-area" id="stage"></div>
+            </div>
+        </div>
+
+        <script>
+        class GameObject {
+            constructor(x, y, imageSrc, interval, width = 80, height = 80) {
+                this.x = x;
+                this.y = y;
+                this.imageSrc = imageSrc;
+                this.interval = interval;
+                this.width = width;   
+                this.height = height; 
+                this.$el = null; 
+            }
+
+            render(targetSelector) {
+                const container = document.querySelector(targetSelector);
+                
+                if (container) {
+                    this.$el = document.createElement('div');
+                    this.$el.className = 'game-object';
+                    
+                    this.$el.style.left = `${this.x}px`;
+                    this.$el.style.top = `${this.y}px`;
+
+                    const img = document.createElement('img');
+                    img.src = this.imageSrc;
+                    
+                    img.style.width = `${this.width}px`;
+                    img.style.height = `${this.height}px`;
+                    img.style.objectFit = 'contain';
+
+                    this.$el.append(img);
+                    container.append(this.$el);
+
+                    setInterval(() => {
+                        this.update();
+                    }, this.interval);
+                } else {
+                    throw new Error(`Контейнер ${targetSelector} не знайдено.`);
+                }
+            }
+
+            update() {
+                // Перевизначено в нащадках
+            }
+        }
+
+        class House extends GameObject {
+            constructor(x, y, imageSrc, interval) {
+                super(x, y, imageSrc, interval, 180, 180);
+                this.isBig = false; 
+            }
+
+            update() {
+                if (this.$el) {
+                    if (this.isBig) {
+                        this.$el.style.transform = 'scale(1)';
+                        this.isBig = false;
+                    } else {
+                        this.$el.style.transform = 'scale(1.15)';
+                        this.isBig = true;
+                    }
+                }
+            }
+        }
+
+
+        class Dog extends GameObject {
+            constructor(x, y, imageSrc, interval) {
+                super(x, y, imageSrc, interval, 100, 100);
+            }
+
+            update() {
+                if (this.$el) {
+                    const offset = (Math.random() - 0.5) * 120;
+                    this.x += offset;
+
+                    const maxWidth = window.innerWidth - this.width - 20;
+                    if (this.x < 10) this.x = 10;
+                    if (this.x > maxWidth) this.x = maxWidth;
+
+                    if (offset > 0) {
+                        this.$el.style.transform = 'scaleX(1)';
+                    } else {
+                        this.$el.style.transform = 'scaleX(-1)';
+                    }
+
+                    this.$el.style.left = `${this.x}px`;
+                }
+            }
+        }
+
+        class Bird extends GameObject {
+            constructor(x, y, imageSrc, interval) {
+                super(x, y, imageSrc, interval, 50, 50);
+            }
+
+            update() {
+                if (this.$el) {
+                    const offsetX = (Math.random() - 0.5) * 150;
+                    const offsetY = (Math.random() - 0.5) * 150;
+
+                    this.x += offsetX;
+                    this.y += offsetY;
+
+                    const maxWidth = window.innerWidth - this.width - 20;
+                    const maxHeight = window.innerHeight - this.height - 60;
+
+                    if (this.x < 10) this.x = 10;
+                    if (this.x > maxWidth) this.x = maxWidth;
+                    if (this.y < 10) this.y = 10;
+                    if (this.y > maxHeight) this.y = maxHeight;
+
+                    if (offsetX > 0) {
+                        this.$el.style.transform = 'scaleX(1)';
+                    } else {
+                        this.$el.style.transform = 'scaleX(-1)';
+                    }
+
+                    this.$el.style.left = `${this.x}px`;
+                    this.$el.style.top = `${this.y}px`;
+                }
+            }
+        }
+
+
+        window.onload = function() {
+            try {
+                const houseImg = '../images/home.png';
+                const dogImg = '../images/dog.png';
+                const birdImg = '../images/bird.png';
+
+                const myHouse = new House(150, 200, houseImg, 1200);
+                myHouse.render('#stage');
+
+                const myDog = new Dog(400, 450, dogImg, 600);
+                myDog.render('#stage');
+
+                const myBird = new Bird(500, 80, birdImg, 500);
+                myBird.render('#stage');
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+    </script>
+    </body>
+</html>

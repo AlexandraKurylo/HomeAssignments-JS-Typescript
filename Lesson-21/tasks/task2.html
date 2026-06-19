@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача 0</title>
+        <style>
+            .hr-panel {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                color: #f1f5f9;
+            }
+
+            .hr-panel__container {
+                max-width: 1240px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+
+            .hr-panel__main {
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 24px;
+                padding: 35px;
+                width: 100%;
+                max-width: 550px;
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            }
+
+            .hr-panel__title {
+                font-size: 22px;
+                font-weight: 800;
+                color: #38bdf8;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+            .hr-panel__error-message {
+                background: rgba(239, 68, 68, 0.15);
+                border: 1px solid #ef4444;
+                color: #fca5a5;
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 14px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .hr-form {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .hr-form__row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .hr-form__group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .hr-form__label {
+                font-size: 13px;
+                font-weight: 700;
+                color: #94a3b8;
+            }
+
+            .hr-form__label--required::after {
+                content: " *";
+                color: #ef4444;
+            }
+
+            .hr-form__input {
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 10px;
+                padding: 10px 14px;
+                font-family: inherit;
+                font-size: 14px;
+                color: #ffffff;
+                outline: none;
+                transition: all 0.2s ease;
+            }
+
+            .hr-form__input:focus {
+                border-color: #38bdf8;
+            }
+
+            .hr-form__input--invalid {
+                border-color: #ef4444 !important;
+                background: rgba(239, 68, 68, 0.05);
+                box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+            }
+
+            .hr-form__button {
+                background: #38bdf8;
+                color: #0f172a;
+                border: none;
+                border-radius: 10px;
+                padding: 14px;
+                font-family: inherit;
+                font-size: 15px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                margin-top: 10px;
+            }
+
+            .hr-form__button:hover {
+                background: #0ea5e9;
+            }
+
+            .hr-result {
+                margin-top: 25px;
+                background: #0f172a;
+                border: 2px solid #334155;
+                border-radius: 16px;
+                padding: 20px;
+                display: none;
+            }
+
+            .hr-result__section {
+                border-bottom: 1px solid #334155;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .hr-result__section:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
+
+            .hr-result__text {
+                font-size: 14px;
+                line-height: 1.6;
+                color: #cbd5e1;
+            }
+
+            .hr-result__text--highlight {
+                color: #4ade80 !important;
+                font-weight: 700;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="hr-panel">
+            <div class="hr-panel__container">
+                <div class="hr-panel__main">
+                    <h2 class="hr-panel__title">💼 Кадровий облік та
+                        Зарплата</h2>
+                    <div class="hr-panel__error-message" id="errorBlock"></div>
+                    <div id="hrAppContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        class Person {
+            constructor(name, age, address) {
+                this.name = name;
+                this.age = age;
+                this.address = address;
+            }
+
+            getBirthYear() {
+                const currentYear = new Date().getFullYear();
+                return currentYear - this.age;
+            }
+
+            toString() {
+                return `Ім'я: ${this.name}, Вік: ${this.age} р., Адреса: ${this.address}`;
+            }
+        }
+
+        class Worker extends Person {
+            constructor(name, age, address, position, salary, taxPercentage) {
+                super(name, age, address);
+                this.position = position;
+                this.salary = salary;             
+                this.taxPercentage = taxPercentage; 
+            }
+
+            getAnnualTaxes() {
+                return (this.salary * 12) * (this.taxPercentage / 100);
+            }
+
+            getAnnualNetPayout() {
+                return (this.salary * 12) - this.getAnnualTaxes();
+            }
+
+            toString() {
+                return `${super.toString()}, Посада: ${this.position}, Місячний оклад: ${this.salary} грн, Податок: ${this.taxPercentage}%`;
+            }
+        }
+
+        class HRManager {
+            constructor() {}
+
+            checkNumberField($input, min, max) {
+                const trimmed = $input.value.trim();
+                const num = Number(trimmed);
+
+                if (trimmed === '' || isNaN(num) || num < min || num > max) {
+                    $input.classList.add('hr-form__input--invalid');
+                    return null;
+                }
+                return num;
+            }
+
+            checkTextField($input) {
+                const trimmed = $input.value.trim();
+
+                if (trimmed === '') {
+                    $input.classList.add('hr-form__input--invalid');
+                    return null;
+                }
+                return trimmed;
+            }
+
+            onCalculate(e) {
+                e.preventDefault();
+
+                const errorBlock = document.getElementById('errorBlock');
+                if (errorBlock && this.$resultBlock) {
+
+                    errorBlock.style.display = 'none';
+                    this.$resultBlock.style.display = 'none';
+
+                    this.$nameInp.classList.remove('hr-form__input--invalid');
+                    this.$ageInp.classList.remove('hr-form__input--invalid');
+                    this.$addressInp.classList.remove('hr-form__input--invalid');
+                    this.$positionInp.classList.remove('hr-form__input--invalid');
+                    this.$salaryInp.classList.remove('hr-form__input--invalid');
+                    this.$taxInp.classList.remove('hr-form__input--invalid');
+
+                    let hasErrors = false;
+
+                    const name = this.checkTextField(this.$nameInp);
+                    const age = this.checkNumberField(this.$ageInp, 14, 100);
+                    const address = this.checkTextField(this.$addressInp);
+                    const position = this.checkTextField(this.$positionInp);
+                    const salary = this.checkNumberField(this.$salaryInp, 1, 1000000);
+                    const tax = this.checkNumberField(this.$taxInp, 0, 90);
+
+                    if (name === null || age === null || address === null || position === null || salary === null || tax === null) {
+                        hasErrors = true;
+                    }
+
+                    if (hasErrors === false) {
+                        const employee = new Worker(name, age, address, position, salary, tax);
+
+                        this.$resInfoText.innerText = `📋 Особова картка: ${employee.toString()}`;
+                        this.$resBirthText.innerText = `📅 Рік народження працівника: ${employee.getBirthYear()} р.`;
+                        this.$resTaxesText.innerText = `💸 Податкові відрахування за рік: ${employee.getAnnualTaxes().toFixed(2)} грн`;
+                        this.$resPayoutText.innerText = `💰 Чиста виплата за рік (на руки): ${employee.getAnnualNetPayout().toFixed(2)} грн`;
+
+                        this.$resultBlock.style.display = 'block';
+                    } else {
+                        errorBlock.innerText = "⚠️ Будь ласка, заповніть усі обов'язкові поля коректними даними!";
+                        errorBlock.style.display = 'block';
+                    }
+
+                } else {
+                    throw new Error("Необхідні елементи відображення відсутні в DOM.");
+                }
+            }
+
+            createFormField(labelText, inputId, placeholder) {
+                const group = document.createElement('div');
+                group.className = 'hr-form__group';
+
+                const label = document.createElement('label');
+
+                label.className = 'hr-form__label hr-form__label--required';
+                label.innerText = labelText;
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'hr-form__input';
+                input.id = inputId;
+                input.placeholder = placeholder;
+
+                group.append(label);
+                group.append(input);
+
+                return { group, input };
+            }
+
+            createResultSection() {
+                const section = document.createElement('div');
+                section.className = 'hr-result__section';
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'hr-result__text';
+                
+                section.append(textDiv);
+                return { section, textDiv };
+            }
+
+            render(targetSelector) {
+                const form = document.createElement('form');
+                form.className = 'hr-form';
+
+                // 1. Рядок: Ім'я та Вік
+                const firstRow = document.createElement('div');
+                firstRow.className = 'hr-form__row';
+                const nameField = this.createFormField("Ім'я працівника", 'empName', 'Іванов І.І.');
+                const ageField = this.createFormField("Вік (повних років)", 'empAge', '30');
+                firstRow.append(nameField.group);
+                firstRow.append(ageField.group);
+
+                this.$nameInp = nameField.input;
+                this.$ageInp = ageField.input;
+
+                // 2. Рядок: Адреса
+                const addressField = this.createFormField("Домашня адреса", 'empAddress', 'м. Одеса, вул. Дерибасівська, 1');
+                this.$addressInp = addressField.input;
+
+                // 3. Рядок: Посада
+                const positionField = this.createFormField("Посада", 'empPosition', 'Senior Frontend Developer');
+                this.$positionInp = positionField.input;
+
+                // 4. Рядок: Місячний оклад та Податок
+                const secondRow = document.createElement('div');
+                secondRow.className = 'hr-form__row';
+                const salaryField = this.createFormField("Місячний оклад (грн)", 'empSalary', '50000');
+                const taxField = this.createFormField("Податок (%)", 'empTax', '19.5');
+                secondRow.append(salaryField.group);
+                secondRow.append(taxField.group);
+
+                this.$salaryInp = salaryField.input;
+                this.$taxInp = taxField.input;
+
+                // 5. Кнопка
+                const btn = document.createElement('button');
+                btn.type = 'submit';
+                btn.className = 'hr-form__button';
+                btn.innerText = 'Оформити та розрахувати';
+
+                form.append(firstRow);
+                form.append(addressField.group);
+                form.append(positionField.group);
+                form.append(secondRow);
+                form.append(btn);
+
+                this.$resultBlock = document.createElement('div');
+                this.$resultBlock.className = 'hr-result';
+
+                const infoSec = this.createResultSection();
+                this.$resInfoText = infoSec.textDiv;
+
+                const birthSec = this.createResultSection();
+                this.$resBirthText = birthSec.textDiv;
+
+                const taxesSec = this.createResultSection();
+                this.$resTaxesText = taxesSec.textDiv;
+
+                const payoutSec = this.createResultSection();
+                payoutSec.textDiv.classList.add('hr-result__text--highlight');
+                this.$resPayoutText = payoutSec.textDiv;
+
+                this.$resultBlock.append(infoSec.section);
+                this.$resultBlock.append(birthSec.section);
+                this.$resultBlock.append(taxesSec.section);
+                this.$resultBlock.append(payoutSec.section);
+
+                form.onsubmit = this.onCalculate.bind(this);
+
+                if (targetSelector) {
+                    const target = document.querySelector(targetSelector);
+                    if (target) {
+                        target.append(form);
+                        target.append(this.$resultBlock);
+                    } else {
+                        throw new Error(`Селектор "${targetSelector}" не знайдено.`);
+                    }
+                } else {
+                    throw new Error("Не передано селектор.");
+                }
+
+                this.$el = form;
+                return form;
+            }
+        }
+
+        window.onload = function () {
+            const errorBlock = document.getElementById('errorBlock');
+            try {
+                if (!errorBlock) throw new Error("Елемент #errorBlock відсутній.");
+                
+                const app = new HRManager();
+                app.render('#hrAppContainer');
+            } catch (error) {
+                if (errorBlock) {
+                    errorBlock.innerText = e.message;
+                    errorBlock.style.display = 'block';
+                } else {
+                    throw error;
+                }
+            }
+        };
+    </script>
+    </body>
+</html>
