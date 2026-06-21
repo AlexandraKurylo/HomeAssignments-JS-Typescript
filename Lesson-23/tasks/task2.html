@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../css/reset.css">
+        <title>Задача: Перевірка оператора</title>
+        <style>
+            .task-card {
+                font-family: 'Montserrat', sans-serif;
+                background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+                color: #f1f5f9;
+                
+            }
+
+            .task-card__container {
+                max-width: 1240px;
+                padding: 40px 20px;
+                min-height: 100vh;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+            }
+
+            .task-card__main {
+                background: rgba(30, 41, 59, 0.7);
+                border: 1px solid #334155;
+                border-radius: 24px;
+                width: 100%;
+                padding: 40px;
+                max-width: 450px;
+                backdrop-filter: blur(12px);
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+                text-align: center;
+            }
+
+            .task-card__title {
+                color: #38bdf8;
+                font-size: 22px;
+                font-weight: 800;
+                margin-bottom: 20px;
+            }
+
+            input {
+                padding: 12px;
+                border-radius: 12px;
+                border: 1px solid #334155;
+                background: #0f172a;
+                color: white;
+                width: 100%;
+                box-sizing: border-box;
+                margin-bottom: 15px;
+            }
+
+            button {
+                padding: 12px 25px;
+                border-radius: 12px;
+                border: none;
+                background: #38bdf8;
+                color: #0f172a;
+                font-weight: 700;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            button:hover {
+                background: #7dd3fc;
+            }
+
+            #result {
+                margin-top: 20px;
+                font-weight: 600;
+                color: #f59e0b;
+                min-height: 24px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="task-card">
+            <div class="task-card__container">
+                <div class="task-card__main">
+                    <h2 class="task-card__title">Перевірка оператора</h2>
+                    <input type="text" id="phoneInput"
+                        placeholder="Наприклад: 0501234567">
+                    <button id="checkBtn">Перевірити</button>
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        const OPERATORS = {
+            KYIVSTAR: Symbol('Kyivstar'),
+            VODAFONE: Symbol('Vodafone'),
+            LIFECELL: Symbol('Lifecell'),
+            UNKNOWN: Symbol('Unknown')
+        };
+
+        class PhoneNumber {
+            constructor(number) { this.number = number; }
+
+            get operator() {
+                const code = this.number.slice(0, 3);
+                switch (code) {
+                    case '050': 
+                    case '066':
+                    case '075': 
+                    case '095':
+                    case '099':
+                        return OPERATORS.VODAFONE;
+                    case '096': 
+                    case '097':
+                    case '098': 
+                    case '067': 
+                    case '068':
+                    case '077':
+                        return OPERATORS.KYIVSTAR;
+                    case '063':
+                    case '073': 
+                    case '093': 
+                        return OPERATORS.LIFECELL;
+                    default: 
+                        return OPERATORS.UNKNOWN;
+                }
+            }
+
+            toString() {
+                let name;
+                switch (this.operator) {
+                    case OPERATORS.VODAFONE: name = 'Vodafone'; break;
+                    case OPERATORS.KYIVSTAR: name = 'Kyivstar'; break;
+                    case OPERATORS.LIFECELL: name = 'Lifecell'; break;
+                    default: name = 'Невідомий';
+                }
+                return `Номер: ${this.number} | Оператор: ${name}`;
+            }
+        }
+        
+        document.body.addEventListener('click', (event) => {
+            if (event.target && event.target.id === 'checkBtn') {
+                const input = document.getElementById('phoneInput');
+                const resDiv = document.getElementById('result');
+                
+                try {
+                    if (!input || !resDiv) throw new Error("Елементи інтерфейсу не знайдені");
+                    
+                    const val = input.value.trim();
+                    const phoneRegex = /^0\d{9}$/;
+
+                    if (!phoneRegex.test(val)) {
+                        throw new Error("Некоректний формат! Введіть 10 цифр, починаючи з 0");
+                    }
+
+                    const phone = new PhoneNumber(val);
+                    resDiv.style.color = '#f59e0b';
+                    resDiv.textContent = phone.toString();
+                    
+                } catch (error) {
+                    resDiv.style.color = '#ef4444';
+                    resDiv.textContent = error.message;
+                }
+            }
+        });
+    </script>
+    </body>
+</html>
