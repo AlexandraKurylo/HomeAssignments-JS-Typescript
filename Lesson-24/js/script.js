@@ -3,12 +3,14 @@
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+const API_URL = "https://emojihub.yurace.pro/api"
+
 /**
  * 1. Клас для отримання даних з API
  */
 class EmojiAPI {
     static async fetchAll() {
-        const res = await fetch('https://emojihub.yurace.pro/api/all');
+        const res = await fetch(`${API_URL}/all`);
         if (!res.ok) throw new Error("Error loading data from API");
         return await res.json();
     }
