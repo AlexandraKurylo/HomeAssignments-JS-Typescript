@@ -1,4 +1,5 @@
 "use strict";
+// Використане API: EmojiHu (Get emojis by categories and groups)
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
