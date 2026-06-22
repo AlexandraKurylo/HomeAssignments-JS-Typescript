@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <title>EmojiHub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="./css/reset.css">
+
+    </head>
+    <body>
+        <div class="wrapper">
+            <header class="header">
+                <div class="header__container">
+                    <h1 class="header__title">Emoji Explorer</h1>
+                </div>
+            </header>
+            <main>
+                <div id="gallery" class="gallery">
+                    <div class="gallery__container" id="galleryContainer">
+                    </div>
+                </div>
+                <div id="pagination" class="pagination">
+                    <button id="prevBtn">⬅️Previous</button>
+                    <span id="pageInfo"></span>
+                    <button id="nextBtn">Next➡️</button>
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="footer__container">
+                    <p>&copy; 2026 EmojiHub Explorer</p>
+                </div>
+            </footer>
+        </div>
+        <div id="loader" class="backdrop" style="display: none;">
+            <div class="loader"></div>
+        </div>
+        <script src="./js/script.js"></script>
+    </body>
+</html>
