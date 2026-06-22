@@ -120,6 +120,7 @@ body {
     color: white;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s;
 }
 
 .pagination {
@@ -152,6 +153,12 @@ body {
         box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.3);
         transform: translateY(-2px);
     }
+
+    .toggleBtn:hover {
+        background: #0369a1;
+        box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.3); 
+    }
+
 }
 
 .pagination button:active:not(:disabled) {
