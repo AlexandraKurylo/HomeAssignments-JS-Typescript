@@ -27,18 +27,28 @@ class EmojiCard {
 
     create() {
         const card = document.createElement('div');
-        card.className = 'gallery__card card';
+        card.className = 'gallery__card card-gallery';
+
+        const contentBox = document.createElement('div');
+        contentBox.style.display = 'flex';
+        contentBox.style.alignItems = 'center';
+        contentBox.style.justifyContent = 'center';
+        contentBox.style.flexGrow = '1';
+        contentBox.style.margin = '10px 0';
 
         const name = document.createElement('div');
-        name.className = 'gallery__name name';
+        name.className = 'card-gallery__name';
         name.textContent = this.data.name;
 
         const emoji = document.createElement('div');
-        emoji.className = 'gallery__emoji emoji';
-        emoji.style.visibility = 'hidden'; 
+        emoji.className = 'card-gallery__emoji';
+        emoji.style.display = 'none';
+        emoji.style.fontSize = '50px';
         
         const code = this.data.unicode?.[0] ? parseInt(this.data.unicode[0].replace('U+', ''), 16) : 0;
         emoji.textContent = code ? String.fromCodePoint(code) : '?';
+
+        contentBox.append(name, emoji);
 
         const btn = document.createElement('button');
         btn.className = 'toggleBtn';
@@ -46,11 +56,12 @@ class EmojiCard {
 
         btn.addEventListener('click', () => {
             this.isVisible = !this.isVisible;
-            emoji.style.visibility = this.isVisible ? 'visible' : 'hidden';
+            emoji.style.display = this.isVisible ? 'flex' : 'none';
+            name.style.display = this.isVisible ? 'none' : 'block';
             btn.textContent = this.isVisible ? 'Hide emoji' : 'Show emoji';
         });
 
-        card.append(name, emoji, btn);
+        card.append(contentBox, btn);
         return card;
     }
 }
@@ -62,7 +73,7 @@ class EmojiManager {
     constructor(data) {
         this.data = data;
         this.currentPage = 1;
-        this.itemsPerPage = 20;
+        this.itemsPerPage = 21;
         this.container = getElement('galleryContainer');
         this.pageInfo = getElement('pageInfo');
         this.prevBtn = getElement('prevBtn');

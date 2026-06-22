@@ -67,11 +67,12 @@ body {
 
 .gallery__container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 15px;
 }
 
-.gallery__card {
+
+.card-gallery {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 16px;
@@ -79,19 +80,20 @@ body {
     display: flex;
     flex-direction: column;
     border: 1px solid #e2e8f0;
+    height: 200px;
 }
 
-.gallery__emoji {
+.card-gallery__emoji {
     font-size: 50px;
     min-height: 70px;
     margin: 10px 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    visibility: hidden;
+    visibility: visible;
 }
 
-.gallery__name {
+.card-gallery__name {
     font-size: 15px;
     font-weight: 600;
     line-height: 1.4;
@@ -100,6 +102,13 @@ body {
     overflow-wrap: break-word;
     margin-bottom: 15px;
     text-transform: capitalize;
+}
+
+.card-gallery__name,
+.card-gallery__emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggleBtn {
@@ -117,13 +126,49 @@ body {
     padding: 40px 0 20px 0;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pagination button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    min-width: 100px;
+}
+
+@media (hover: hover) {
+    .pagination button:hover:not(:disabled) {
+        background: #0369a1;
+        box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+}
+
+.pagination button:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }
 
 .pagination button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+#pageInfo {
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center;
 }
 
 .footer {
